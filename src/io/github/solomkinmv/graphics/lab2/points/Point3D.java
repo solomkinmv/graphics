@@ -1,0 +1,25 @@
+package io.github.solomkinmv.graphics.lab2.points;
+
+public class Point3D {
+    public final double x;
+    public final double y;
+    public final double z;
+
+    public Point3D(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public int getX() {
+        return (int) Math.round(x);
+    }
+
+    public int getY() {
+        return (int) Math.round(y);
+    }
+
+    public int getZ() {
+        return (int) Math.round(z);
+    }
+}
