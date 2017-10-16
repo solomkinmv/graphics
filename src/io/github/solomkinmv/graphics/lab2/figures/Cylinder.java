@@ -1,5 +1,6 @@
 package io.github.solomkinmv.graphics.lab2.figures;
 
+import io.github.solomkinmv.graphics.lab2.generator.CylinderPoints;
 import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
 import io.github.solomkinmv.graphics.lab2.graphics.IsometricTransformer;
 import io.github.solomkinmv.graphics.lab2.points.Point2D;
@@ -10,7 +11,6 @@ import java.util.stream.DoubleStream;
 public class Cylinder implements Drawing {
     private final Graphics graphics;
     private final IsometricTransformer isometricTransformer;
-    private static final int HEIGHT = 200;
 
     public Cylinder(Graphics graphics) {
         this.graphics = graphics;
@@ -20,23 +20,30 @@ public class Cylinder implements Drawing {
     @Override
     public void draw() {
         drawAxis();
-        drawCircle(0);
-        drawCircle(HEIGHT);
-        drawSides();
+        drawFigure();
     }
 
-    private void drawSides() {
-        Point2D[] point2DS = generateCircle(0);
-        double shift = 0;
-        Point2D max = null;
-        for (Point2D point2D : point2DS) {
-            if (point2D.x > shift) {
-                shift = point2D.x;
-                max = point2D;
+    private void drawFigure() {
+        Point3D[][] cylinderPoints = new CylinderPoints(200, 300, 50, 20).generatePoints();
+
+        for (int i = 0; i < cylinderPoints.length; i++) {
+            for (int j = 0; j < cylinderPoints[i].length; j++) {
+                Point3D point3D = cylinderPoints[i][j];
+                Point2D transoformedPoint = isometricTransformer.transform(point3D);
+                int jMax = cylinderPoints[i].length - 1;
+
+                graphics.line(transoformedPoint, isometricTransformer.transform(cylinderPoints[i][(j + 1) % jMax]));
+                int iMax = cylinderPoints.length - 1;
+                boolean hasTopPoint = i < iMax;
+                if (hasTopPoint) {
+                    graphics.line(transoformedPoint, isometricTransformer.transform(cylinderPoints[i + 1][j]));
+                }
+                if (hasTopPoint) {
+                    graphics.line(transoformedPoint,
+                                  isometricTransformer.transform(cylinderPoints[i + 1][(j + 1) % jMax]));
+                }
             }
         }
-        graphics.line(max, new Point2D(max.x, max.y + HEIGHT));
-        graphics.line(new Point2D(-max.x, max.y), new Point2D(-max.x, max.y + HEIGHT));
     }
 
     private void drawAxis() {
@@ -48,14 +55,6 @@ public class Cylinder implements Drawing {
         graphics.line(isometricTransformer.transform(ox));
         graphics.line(isometricTransformer.transform(oy));
         graphics.line(isometricTransformer.transform(oz));
-    }
-
-    private void drawCircle(int z) {
-        Point2D[] point2DS = generateCircle(z);
-        for (int i = 0; i < point2DS.length - 1; i++) {
-            graphics.line(point2DS[i], point2DS[i + 1]);
-        }
-        graphics.line(point2DS[0], point2DS[point2DS.length - 1]);
     }
 
     private Point2D[] generateCircle(int z) {
