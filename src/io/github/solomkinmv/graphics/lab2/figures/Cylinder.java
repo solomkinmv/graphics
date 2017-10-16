@@ -14,7 +14,7 @@ public class Cylinder implements Drawing {
 
     public Cylinder(Graphics graphics) {
         this.graphics = graphics;
-        isometricTransformer = new IsometricTransformer();
+        isometricTransformer = new IsometricTransformer(225, 60);
     }
 
     @Override
