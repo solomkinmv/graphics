@@ -11,8 +11,8 @@ import java.util.List;
 public class BezierScatterFrame extends ScatterFrame {
 
     private final static List<Point2D> sourcePoints = Arrays.asList(new Point2D(1, 1),
-                                                                    new Point2D(5, 5),
-                                                                    new Point2D(10, 1));
+                                                                    new Point2D(5, 7),
+                                                                    new Point2D(7, 2));
 
     public BezierScatterFrame(String title) {
         super(title);
@@ -24,6 +24,6 @@ public class BezierScatterFrame extends ScatterFrame {
 
     @Override
     protected PointsGenerator getPointsGenerator() {
-        return new BezierPoints(sourcePoints, 3, 10);
+        return new BezierPoints(sourcePoints, 3, 3, 100, 100);
     }
 }
