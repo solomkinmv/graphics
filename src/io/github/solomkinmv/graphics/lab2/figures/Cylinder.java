@@ -6,9 +6,8 @@ import io.github.solomkinmv.graphics.lab2.graphics.IsometricTransformer;
 import io.github.solomkinmv.graphics.lab2.points.Point2D;
 import io.github.solomkinmv.graphics.lab2.points.Point3D;
 
-import java.util.stream.DoubleStream;
-
 public class Cylinder implements Drawing {
+    private static final int AXIS_LENGTH = 600;
     private final Graphics graphics;
     private final IsometricTransformer isometricTransformer;
     private final int hParts;
@@ -59,31 +58,12 @@ public class Cylinder implements Drawing {
     }
 
     private void drawAxis() {
-        int len = 300;
-        Point3D ox = new Point3D(len, 0, 0);
-        Point3D oy = new Point3D(0, len, 0);
-        Point3D oz = new Point3D(0, 0, len);
+        Point3D ox = new Point3D(AXIS_LENGTH, 0, 0);
+        Point3D oy = new Point3D(0, AXIS_LENGTH, 0);
+        Point3D oz = new Point3D(0, 0, AXIS_LENGTH);
 
         graphics.line(isometricTransformer.transform(ox));
         graphics.line(isometricTransformer.transform(oy));
         graphics.line(isometricTransformer.transform(oz));
-    }
-
-    private Point2D[] generateCircle(int z) {
-        double parts = 100;
-        double step = 1 / parts;
-        int scale = 100;
-        return DoubleStream.iterate(0, (v) -> v <= 1, (v) -> v + step)
-                           .mapToObj(u -> create3dPointFromSeed(u, z, scale))
-                           .map(isometricTransformer::transform)
-                           .toArray(Point2D[]::new);
-    }
-
-    private Point3D create3dPointFromSeed(double u, int z, int scale) {
-        return new Point3D(Math.cos(getRad(u)) * scale, Math.sin(getRad(u)) * scale, z);
-    }
-
-    private double getRad(double u) {
-        return 2 * Math.PI * u;
     }
 }
