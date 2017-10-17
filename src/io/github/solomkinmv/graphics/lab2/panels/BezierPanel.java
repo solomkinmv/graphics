@@ -1,6 +1,7 @@
 package io.github.solomkinmv.graphics.lab2.panels;
 
 import io.github.solomkinmv.graphics.lab2.figures.Bezier;
+import io.github.solomkinmv.graphics.lab2.figures.BezierFlat;
 import io.github.solomkinmv.graphics.lab2.figures.Drawing;
 import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
 import io.github.solomkinmv.graphics.lab2.points.Point2D;
@@ -13,6 +14,7 @@ import java.util.function.Function;
 
 public class BezierPanel implements GraphicPanels {
     private static final int SIZE = 1200;
+    private final GraphicCanvas flatCanvas;
     private JPanel panel;
     private GraphicCanvas canvas;
     private int fiAngle = 220;
@@ -26,13 +28,24 @@ public class BezierPanel implements GraphicPanels {
 
     public BezierPanel() {
         canvas = new GraphicCanvas(newBezierFunction(), SIZE, SIZE);
+        flatCanvas = new GraphicCanvas(newFlatBezierFunction(), SIZE / 2, SIZE / 2);
         init();
     }
 
     private void init() {
-        panel = new JPanel();
-        panel.add(canvas);
-        panel.add(createControls());
+        panel = new JPanel(new BorderLayout());
+        panel.add(canvas, BorderLayout.CENTER);
+
+        JPanel sidePanel = new JPanel(new BorderLayout());
+        sidePanel.add(createFlatPanel(), BorderLayout.NORTH);
+        sidePanel.add(createControls(), BorderLayout.SOUTH);
+        panel.add(sidePanel, BorderLayout.EAST);
+    }
+
+    private Component createFlatPanel() {
+        JPanel panel = new JPanel();
+        panel.add(flatCanvas);
+        return panel;
     }
 
     private Component createControls() {
@@ -49,6 +62,9 @@ public class BezierPanel implements GraphicPanels {
     private void repaint() {
         canvas.setDrawingFunction(newBezierFunction());
         canvas.repaint();
+
+        flatCanvas.setDrawingFunction(newFlatBezierFunction());
+        flatCanvas.repaint();
     }
 
     private void setRadiusSpinner(JPanel controlPanel) {
@@ -128,5 +144,9 @@ public class BezierPanel implements GraphicPanels {
 
     private Function<Graphics, Drawing> newBezierFunction() {
         return graphics -> new Bezier(sourcePoints, graphics, fiAngle, thetaAngle, edges, edges, radius, height);
+    }
+
+    private Function<Graphics, Drawing> newFlatBezierFunction() {
+        return graphics -> new BezierFlat(sourcePoints, graphics, edges, radius, height);
     }
 }
