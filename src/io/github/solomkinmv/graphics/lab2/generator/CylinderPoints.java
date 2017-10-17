@@ -4,7 +4,7 @@ import io.github.solomkinmv.graphics.lab2.points.Point3D;
 
 import java.util.stream.DoubleStream;
 
-public class CylinderPoints {
+public class CylinderPoints implements PointsGenerator {
 
     private final int r;
     private final int h;
@@ -25,6 +25,7 @@ public class CylinderPoints {
         hParts = 100;
     }
 
+    @Override
     public Point3D[][] generatePoints() {
         double step = 1. / vParts;
 

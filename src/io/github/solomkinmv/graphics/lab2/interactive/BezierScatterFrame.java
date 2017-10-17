@@ -1,0 +1,28 @@
+package io.github.solomkinmv.graphics.lab2.interactive;
+
+import io.github.solomkinmv.graphics.lab2.generator.BezierPoints;
+import io.github.solomkinmv.graphics.lab2.generator.PointsGenerator;
+import io.github.solomkinmv.graphics.lab2.points.Point2D;
+
+import java.util.Arrays;
+import java.util.List;
+
+
+public class BezierScatterFrame extends ScatterFrame {
+
+    private final static List<Point2D> sourcePoints = Arrays.asList(new Point2D(1, 1), new Point2D(5, 5),
+                                                                    new Point2D(10, 1));
+
+    public BezierScatterFrame(String title) {
+        super(title);
+    }
+
+    public static void main(String[] args) {
+        new BezierScatterFrame("Bezier Scatter");
+    }
+
+    @Override
+    protected PointsGenerator getPointsGenerator() {
+        return new BezierPoints(sourcePoints, 3, 10);
+    }
+}

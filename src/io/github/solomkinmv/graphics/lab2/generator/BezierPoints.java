@@ -6,7 +6,7 @@ import io.github.solomkinmv.graphics.lab2.points.Point3D;
 import java.util.List;
 import java.util.stream.DoubleStream;
 
-public class BezierPoints {
+public class BezierPoints implements PointsGenerator {
     private final List<Point2D> sourcePoints;
     private final int r;
     private final int h;
@@ -25,6 +25,7 @@ public class BezierPoints {
         this(sourcePoints, r, h, 100, 10);
     }
 
+    @Override
     public Point3D[][] generatePoints() {
         double step = 1. / vParts;
 
