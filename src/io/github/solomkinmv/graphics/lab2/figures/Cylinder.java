@@ -3,8 +3,8 @@ package io.github.solomkinmv.graphics.lab2.figures;
 import io.github.solomkinmv.graphics.lab2.generator.CylinderPoints;
 import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
 import io.github.solomkinmv.graphics.lab2.graphics.IsometricTransformer;
-import io.github.solomkinmv.graphics.lab2.points.Point2D;
-import io.github.solomkinmv.graphics.lab2.points.Point3D;
+import io.github.solomkinmv.graphics.lab2.types.Point2D;
+import io.github.solomkinmv.graphics.lab2.types.Point3D;
 
 public class Cylinder implements Drawing {
     private static final int AXIS_LENGTH = 600;

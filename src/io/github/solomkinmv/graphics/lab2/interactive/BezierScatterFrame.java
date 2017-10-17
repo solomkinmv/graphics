@@ -2,7 +2,7 @@ package io.github.solomkinmv.graphics.lab2.interactive;
 
 import io.github.solomkinmv.graphics.lab2.generator.BezierPoints;
 import io.github.solomkinmv.graphics.lab2.generator.PointsGenerator;
-import io.github.solomkinmv.graphics.lab2.points.Point2D;
+import io.github.solomkinmv.graphics.lab2.types.Point2D;
 
 import java.util.Arrays;
 import java.util.List;

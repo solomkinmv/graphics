@@ -1,4 +1,4 @@
-package io.github.solomkinmv.graphics.lab2.points;
+package io.github.solomkinmv.graphics.lab2.types;
 
 public class Point2D {
     public final double x;

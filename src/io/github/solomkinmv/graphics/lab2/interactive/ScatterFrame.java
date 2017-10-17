@@ -14,7 +14,7 @@ import com.orsoncharts.label.StandardXYZLabelGenerator;
 import com.orsoncharts.plot.XYZPlot;
 import com.orsoncharts.renderer.xyz.ScatterXYZRenderer;
 import io.github.solomkinmv.graphics.lab2.generator.PointsGenerator;
-import io.github.solomkinmv.graphics.lab2.points.Point3D;
+import io.github.solomkinmv.graphics.lab2.types.Point3D;
 
 import javax.swing.*;
 import java.awt.*;

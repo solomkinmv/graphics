@@ -4,7 +4,7 @@ import io.github.solomkinmv.graphics.lab2.figures.Bezier;
 import io.github.solomkinmv.graphics.lab2.figures.BezierFlat;
 import io.github.solomkinmv.graphics.lab2.figures.Drawing;
 import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
-import io.github.solomkinmv.graphics.lab2.points.Point2D;
+import io.github.solomkinmv.graphics.lab2.types.Point2D;
 
 import javax.swing.*;
 import java.awt.*;

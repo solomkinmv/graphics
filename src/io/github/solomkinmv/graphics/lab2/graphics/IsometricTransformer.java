@@ -1,7 +1,7 @@
 package io.github.solomkinmv.graphics.lab2.graphics;
 
-import io.github.solomkinmv.graphics.lab2.points.Point2D;
-import io.github.solomkinmv.graphics.lab2.points.Point3D;
+import io.github.solomkinmv.graphics.lab2.types.Point2D;
+import io.github.solomkinmv.graphics.lab2.types.Point3D;
 
 public class IsometricTransformer {
     private final double[][] changeArray;
