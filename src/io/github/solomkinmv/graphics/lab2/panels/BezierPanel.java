@@ -11,6 +11,7 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class BezierPanel implements GraphicPanels {
     private static final int SIZE = 1200;
@@ -22,6 +23,7 @@ public class BezierPanel implements GraphicPanels {
     private int edges = 10;
     private int radius = 30;
     private int height = 30;
+    private String bezierPoints = "1,1;5,7;8,2";
     private List<Point2D> sourcePoints = Arrays.asList(new Point2D(1, 1),
                                                        new Point2D(5, 7),
                                                        new Point2D(8, 2));
@@ -49,14 +51,37 @@ public class BezierPanel implements GraphicPanels {
     }
 
     private Component createControls() {
-        JPanel controlPanel = new JPanel(new GridLayout(5, 2));
+        JPanel controlPanel = new JPanel(new GridLayout(6, 2));
 
         setNavigationButtons(controlPanel);
         setEdgesSlider(controlPanel);
         setRadiusSpinner(controlPanel);
         setHeightSpinner(controlPanel);
+        setBezierPointsEditor(controlPanel);
 
         return controlPanel;
+    }
+
+    private void setBezierPointsEditor(JPanel controlPanel) {
+        JTextField bezierText = new JTextField(bezierPoints);
+        bezierText.addActionListener(e -> {
+            bezierPoints = bezierText.getText();
+            parseBezierPoints();
+            repaint();
+        });
+
+        controlPanel.add(new Label("Bezier points"));
+        controlPanel.add(bezierText);
+    }
+
+    private void parseBezierPoints() {
+        Function<String, Point2D> stringToPoint = (str) -> {
+            String[] xyChunks = str.split(",");
+            return new Point2D(Integer.parseInt(xyChunks[0]), Integer.parseInt(xyChunks[1]));
+        };
+        sourcePoints = Arrays.stream(bezierPoints.split(";"))
+                             .map(stringToPoint)
+                             .collect(Collectors.toList());
     }
 
     private void repaint() {
