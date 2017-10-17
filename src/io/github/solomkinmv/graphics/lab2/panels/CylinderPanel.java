@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Function;
 
-public class CylinderPanel {
+public class CylinderPanel implements GraphicPanels {
     private static final int SIZE = 1000;
     private int fiAngle = 220;
     private int thetaAngle = 60;

@@ -10,7 +10,8 @@ import java.util.List;
 
 public class BezierScatterFrame extends ScatterFrame {
 
-    private final static List<Point2D> sourcePoints = Arrays.asList(new Point2D(1, 1), new Point2D(5, 5),
+    private final static List<Point2D> sourcePoints = Arrays.asList(new Point2D(1, 1),
+                                                                    new Point2D(5, 5),
                                                                     new Point2D(10, 1));
 
     public BezierScatterFrame(String title) {
