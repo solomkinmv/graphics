@@ -6,6 +6,7 @@ import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.util.function.Function;
 
 public class CylinderPanel implements GraphicPanels {
@@ -17,6 +18,7 @@ public class CylinderPanel implements GraphicPanels {
     private int edges = 10;
     private int radius = 200;
     private int height = 300;
+    private boolean showNormals;
 
     public CylinderPanel() {
         canvas = new GraphicCanvas(newCylinderFunction(), SIZE, SIZE);
@@ -34,14 +36,24 @@ public class CylinderPanel implements GraphicPanels {
     }
 
     private Component createControls() {
-        JPanel controlPanel = new JPanel(new GridLayout(5, 2));
+        JPanel controlPanel = new JPanel(new GridLayout(6, 2));
 
         setNavigationButtons(controlPanel);
         setEdgesSlider(controlPanel);
         setRadiusSpinner(controlPanel);
         setHeightSpinner(controlPanel);
+        setNormalsShowCheckBox(controlPanel);
 
         return controlPanel;
+    }
+
+    private void setNormalsShowCheckBox(JPanel controlPanel) {
+        JCheckBox normalsCheckBox = new JCheckBox("Show normals");
+        normalsCheckBox.addItemListener(e -> {
+            showNormals = e.getStateChange() == ItemEvent.SELECTED;
+            repaint();
+        });
+        controlPanel.add(normalsCheckBox);
     }
 
     private void setRadiusSpinner(JPanel controlPanel) {
@@ -121,7 +133,7 @@ public class CylinderPanel implements GraphicPanels {
     }
 
     private Function<Graphics, Drawing> newCylinderFunction() {
-        return graphics -> new Cylinder(graphics, fiAngle, thetaAngle, edges, edges, radius, height);
+        return graphics -> new Cylinder(graphics, fiAngle, thetaAngle, edges, edges, radius, height, showNormals);
     }
 
 }

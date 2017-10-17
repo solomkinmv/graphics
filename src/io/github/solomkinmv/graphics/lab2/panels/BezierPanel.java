@@ -8,6 +8,7 @@ import io.github.solomkinmv.graphics.lab2.types.Point2D;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -23,6 +24,7 @@ public class BezierPanel implements GraphicPanels {
     private int edges = 10;
     private int radius = 30;
     private int height = 30;
+    private boolean showNormals;
     private String bezierPoints = "1,1;5,7;8,2";
     private List<Point2D> sourcePoints = Arrays.asList(new Point2D(1, 1),
                                                        new Point2D(5, 7),
@@ -51,15 +53,25 @@ public class BezierPanel implements GraphicPanels {
     }
 
     private Component createControls() {
-        JPanel controlPanel = new JPanel(new GridLayout(6, 2));
+        JPanel controlPanel = new JPanel(new GridLayout(7, 2));
 
         setNavigationButtons(controlPanel);
         setEdgesSlider(controlPanel);
         setRadiusSpinner(controlPanel);
         setHeightSpinner(controlPanel);
         setBezierPointsEditor(controlPanel);
+        setNormalsShowCheckBox(controlPanel);
 
         return controlPanel;
+    }
+
+    private void setNormalsShowCheckBox(JPanel controlPanel) {
+        JCheckBox normalsCheckBox = new JCheckBox("Show normals");
+        normalsCheckBox.addItemListener(e -> {
+            showNormals = e.getStateChange() == ItemEvent.SELECTED;
+            repaint();
+        });
+        controlPanel.add(normalsCheckBox);
     }
 
     private void setBezierPointsEditor(JPanel controlPanel) {
@@ -168,7 +180,7 @@ public class BezierPanel implements GraphicPanels {
     }
 
     private Function<Graphics, Drawing> newBezierFunction() {
-        return graphics -> new Bezier(sourcePoints, graphics, fiAngle, thetaAngle, edges, edges, radius, height);
+        return graphics -> new Bezier(sourcePoints, graphics, fiAngle, thetaAngle, edges, edges, radius, height, showNormals);
     }
 
     private Function<Graphics, Drawing> newFlatBezierFunction() {
