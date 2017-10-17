@@ -11,13 +11,21 @@ import java.util.stream.DoubleStream;
 public class Cylinder implements Drawing {
     private final Graphics graphics;
     private final IsometricTransformer isometricTransformer;
+    private final int hParts;
+    private final int vParts;
+    private final int radius;
+    private final int height;
 
     public Cylinder(Graphics graphics) {
-        this(graphics, 225, 60);
+        this(graphics, 225, 60, 50, 20, 200, 300);
     }
 
-    public Cylinder(Graphics graphics, int fiAngle, int thetaAngle) {
+    public Cylinder(Graphics graphics, int fiAngle, int thetaAngle, int hParts, int vParts, int radius, int height) {
         this.graphics = graphics;
+        this.hParts = hParts;
+        this.vParts = vParts;
+        this.radius = radius;
+        this.height = height;
         isometricTransformer = new IsometricTransformer(fiAngle, thetaAngle);
     }
 
@@ -28,7 +36,7 @@ public class Cylinder implements Drawing {
     }
 
     private void drawFigure() {
-        Point3D[][] cylinderPoints = new CylinderPoints(200, 300, 50, 20).generatePoints();
+        Point3D[][] cylinderPoints = new CylinderPoints(radius, height, hParts, vParts).generatePoints();
 
         for (int i = 0; i < cylinderPoints.length; i++) {
             for (int j = 0; j < cylinderPoints[i].length; j++) {
