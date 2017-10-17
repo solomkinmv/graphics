@@ -13,8 +13,12 @@ public class Cylinder implements Drawing {
     private final IsometricTransformer isometricTransformer;
 
     public Cylinder(Graphics graphics) {
+        this(graphics, 225, 60);
+    }
+
+    public Cylinder(Graphics graphics, int fiAngle, int thetaAngle) {
         this.graphics = graphics;
-        isometricTransformer = new IsometricTransformer(225, 60);
+        isometricTransformer = new IsometricTransformer(fiAngle, thetaAngle);
     }
 
     @Override
