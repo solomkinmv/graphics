@@ -41,7 +41,7 @@ public class Cylinder implements Drawing {
             for (int j = 0; j < cylinderPoints[i].length; j++) {
                 Point3D point3D = cylinderPoints[i][j];
                 Point2D transoformedPoint = isometricTransformer.transform(point3D);
-                int jMax = cylinderPoints[i].length - 1;
+                int jMax = cylinderPoints[i].length;
 
                 graphics.line(transoformedPoint, isometricTransformer.transform(cylinderPoints[i][(j + 1) % jMax]));
                 int iMax = cylinderPoints.length - 1;
