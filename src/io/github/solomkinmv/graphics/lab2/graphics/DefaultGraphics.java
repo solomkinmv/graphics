@@ -2,6 +2,8 @@ package io.github.solomkinmv.graphics.lab2.graphics;
 
 import io.github.solomkinmv.graphics.lab2.types.Point2D;
 
+import java.awt.*;
+
 public class DefaultGraphics implements Graphics {
 
     private final java.awt.Graphics graphics;
@@ -18,5 +20,12 @@ public class DefaultGraphics implements Graphics {
     @Override
     public void line(Point2D point) {
         graphics.drawLine(0, 0, point.getX(), point.getY());
+    }
+
+    @Override
+    public void line(Point2D pointA, Point2D pointB, Color color) {
+        graphics.setColor(color);
+        line(pointA, pointB);
+        graphics.setColor(Color.black);
     }
 }
