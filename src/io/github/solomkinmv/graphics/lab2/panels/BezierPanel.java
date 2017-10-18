@@ -25,12 +25,11 @@ public class BezierPanel implements GraphicPanels {
     private int radius = 30;
     private int height = 30;
     private boolean showNormals;
-    private String bezierPoints = "1,1;5,7;8,2";
-    private List<Point2D> sourcePoints = Arrays.asList(new Point2D(1, 1),
-                                                       new Point2D(5, 7),
-                                                       new Point2D(8, 2));
+    private String bezierPoints = "1,1;5,7;8,2;10,10;15,12";
+    private List<Point2D> sourcePoints;
 
     public BezierPanel() {
+        parseBezierPoints();
         canvas = new GraphicCanvas(newBezierFunction(), SIZE, SIZE);
         flatCanvas = new GraphicCanvas(newFlatBezierFunction(), SIZE / 2, SIZE / 2);
         init();
@@ -105,10 +104,10 @@ public class BezierPanel implements GraphicPanels {
     }
 
     private void setRadiusSpinner(JPanel controlPanel) {
-        SpinnerModel spinnerModel = new SpinnerNumberModel(200, //initial value
-                                                           20, //min
+        SpinnerModel spinnerModel = new SpinnerNumberModel(radius, //initial value
+                                                           5, //min
                                                            300, //max
-                                                           20);//step
+                                                           10);//step
         JSpinner spinner = new JSpinner(spinnerModel);
         spinner.addChangeListener(e -> {
             radius = ((Number) ((JSpinner) e.getSource()).getValue()).intValue();
@@ -119,10 +118,10 @@ public class BezierPanel implements GraphicPanels {
     }
 
     private void setHeightSpinner(JPanel controlPanel) {
-        SpinnerModel spinnerModel = new SpinnerNumberModel(200, //initial value
-                                                           20, //min
+        SpinnerModel spinnerModel = new SpinnerNumberModel(height, //initial value
+                                                           5, //min
                                                            300, //max
-                                                           20);//step
+                                                           10);//step
         JSpinner spinner = new JSpinner(spinnerModel);
         spinner.addChangeListener(e -> {
             height = ((Number) ((JSpinner) e.getSource()).getValue()).intValue();
