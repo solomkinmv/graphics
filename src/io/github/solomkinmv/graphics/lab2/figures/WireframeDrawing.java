@@ -1,6 +1,6 @@
 package io.github.solomkinmv.graphics.lab2.figures;
 
-import io.github.solomkinmv.graphics.lab2.generator.CylinderPoints;
+import io.github.solomkinmv.graphics.lab2.generator.PointsGenerator;
 import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
 import io.github.solomkinmv.graphics.lab2.graphics.IsometricTransformer;
 import io.github.solomkinmv.graphics.lab2.types.Point2D;
@@ -9,34 +9,22 @@ import io.github.solomkinmv.graphics.lab2.types.Vector;
 
 import java.awt.*;
 
-public class Cylinder implements Drawing {
+public class WireframeDrawing implements Drawing {
+
     private static final int AXIS_LENGTH = 600;
     private static final int NORMAL_LENGTH = 40;
+    private final PointsGenerator pointsGenerator;
     private final Graphics graphics;
     private final IsometricTransformer isometricTransformer;
-    private final int hParts;
-    private final int vParts;
-    private final int radius;
-    private final int height;
     private final boolean showNormal;
 
-    public Cylinder(Graphics graphics) {
-        this(graphics, 225, 60, 50, 20, 200, 300);
-    }
-
-    public Cylinder(Graphics graphics, int fiAngle, int thetaAngle, int hParts, int vParts, int radius, int height) {
-        this(graphics, fiAngle, thetaAngle, hParts, vParts, radius, height, false);
-    }
-
-    public Cylinder(Graphics graphics, int fiAngle, int thetaAngle, int hParts, int vParts, int radius, int height, boolean showNormal) {
+    public WireframeDrawing(Graphics graphics, PointsGenerator pointsGenerator, int fiAngle, int thetaAngle, boolean showNormal) {
         this.graphics = graphics;
-        this.hParts = hParts;
-        this.vParts = vParts;
-        this.radius = radius;
-        this.height = height;
+        this.pointsGenerator = pointsGenerator;
+        this.isometricTransformer = new IsometricTransformer(fiAngle, thetaAngle);
         this.showNormal = showNormal;
-        isometricTransformer = new IsometricTransformer(fiAngle, thetaAngle);
     }
+
 
     @Override
     public void draw() {
@@ -45,7 +33,7 @@ public class Cylinder implements Drawing {
     }
 
     private void drawFigure() {
-        Point3D[][] cylinderPoints = new CylinderPoints(radius, height, hParts, vParts).generatePoints();
+        Point3D[][] cylinderPoints = pointsGenerator.generatePoints();
 
         for (int i = 0; i < cylinderPoints.length; i++) {
             for (int j = 0; j < cylinderPoints[i].length; j++) {

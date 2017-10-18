@@ -1,8 +1,9 @@
 package io.github.solomkinmv.graphics.lab2.panels;
 
-import io.github.solomkinmv.graphics.lab2.figures.Bezier;
 import io.github.solomkinmv.graphics.lab2.figures.BezierFlat;
 import io.github.solomkinmv.graphics.lab2.figures.Drawing;
+import io.github.solomkinmv.graphics.lab2.figures.WireframeDrawing;
+import io.github.solomkinmv.graphics.lab2.generator.BezierPoints;
 import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
 import io.github.solomkinmv.graphics.lab2.types.Point2D;
 
@@ -179,7 +180,9 @@ public class BezierPanel implements GraphicPanels {
     }
 
     private Function<Graphics, Drawing> newBezierFunction() {
-        return graphics -> new Bezier(sourcePoints, graphics, fiAngle, thetaAngle, edges, edges, radius, height, showNormals);
+        return graphics -> new WireframeDrawing(graphics,
+                                                new BezierPoints(sourcePoints, radius, height, edges, edges),
+                                                fiAngle, thetaAngle, showNormals);
     }
 
     private Function<Graphics, Drawing> newFlatBezierFunction() {

@@ -1,7 +1,8 @@
 package io.github.solomkinmv.graphics.lab2.panels;
 
-import io.github.solomkinmv.graphics.lab2.figures.Cylinder;
 import io.github.solomkinmv.graphics.lab2.figures.Drawing;
+import io.github.solomkinmv.graphics.lab2.figures.WireframeDrawing;
+import io.github.solomkinmv.graphics.lab2.generator.CylinderPoints;
 import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
 
 import javax.swing.*;
@@ -133,7 +134,9 @@ public class CylinderPanel implements GraphicPanels {
     }
 
     private Function<Graphics, Drawing> newCylinderFunction() {
-        return graphics -> new Cylinder(graphics, fiAngle, thetaAngle, edges, edges, radius, height, showNormals);
+        return graphics -> new WireframeDrawing(graphics,
+                                                new CylinderPoints(radius, height, edges, edges), fiAngle,
+                                                thetaAngle, showNormals);
     }
 
 }
