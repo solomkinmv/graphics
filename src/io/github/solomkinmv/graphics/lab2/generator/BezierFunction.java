@@ -27,10 +27,8 @@ public class BezierFunction {
 
         int n = sourcePoints.size() - 1;
         for (int i = 0; i <= n; i++) {
-            x += fact(n) / (fact(i) * fact(n - i)) * sourcePoints.get(i).getX() * Math.pow(t, i) * Math.pow(1 - t,
-                                                                                                            n - i);
-            y += fact(n) / (fact(i) * fact(n - i)) * sourcePoints.get(i).getY() * Math.pow(t, i) * Math.pow(1 - t,
-                                                                                                            n - i);
+            x += fact(n) / (fact(i) * fact(n - i)) * sourcePoints.get(i).getX() * Math.pow(t, i) * Math.pow(1 - t, n - i);
+            y += fact(n) / (fact(i) * fact(n - i)) * sourcePoints.get(i).getY() * Math.pow(t, i) * Math.pow(1 - t, n - i);
         }
         return new Point2D(x, y);
     }
