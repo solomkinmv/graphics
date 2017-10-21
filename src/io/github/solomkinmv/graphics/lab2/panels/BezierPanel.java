@@ -182,7 +182,7 @@ public class BezierPanel implements GraphicPanels {
     private Function<Graphics, Drawing> newBezierFunction() {
         return graphics -> new WireframeDrawing(graphics,
                                                 new BezierPoints(sourcePoints, radius, height, edges, edges),
-                                                fiAngle, thetaAngle, showNormals);
+                                                fiAngle, thetaAngle, showNormals, true);
     }
 
     private Function<Graphics, Drawing> newFlatBezierFunction() {

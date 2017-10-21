@@ -136,7 +136,7 @@ public class CylinderPanel implements GraphicPanels {
     private Function<Graphics, Drawing> newCylinderFunction() {
         return graphics -> new WireframeDrawing(graphics,
                                                 new CylinderPoints(radius, height, edges, edges), fiAngle,
-                                                thetaAngle, showNormals);
+                                                thetaAngle, showNormals, true);
     }
 
 }
