@@ -35,6 +35,11 @@ public class CenteredGraphics implements Graphics {
         graphics.line(aCentered, bCentered, color);
     }
 
+    @Override
+    public void dot(Point2D point) {
+        Point2D centered = toCentered(point);
+        graphics.line(centered, centered);
+    }
 
     private Point2D toCentered(Point2D point) {
         return new Point2D(center.x + point.x, center.y - point.y);

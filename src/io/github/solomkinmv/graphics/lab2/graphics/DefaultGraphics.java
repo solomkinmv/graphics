@@ -28,4 +28,9 @@ public class DefaultGraphics implements Graphics {
         line(pointA, pointB);
         graphics.setColor(Color.black);
     }
+
+    @Override
+    public void dot(Point2D point) {
+        line(point, point);
+    }
 }
