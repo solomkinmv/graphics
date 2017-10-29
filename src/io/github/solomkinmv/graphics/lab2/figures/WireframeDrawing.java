@@ -5,7 +5,7 @@ import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
 import io.github.solomkinmv.graphics.lab2.graphics.IsometricTransformer;
 import io.github.solomkinmv.graphics.lab2.types.Point2D;
 import io.github.solomkinmv.graphics.lab2.types.Point3D;
-import io.github.solomkinmv.graphics.lab2.types.Vector;
+import io.github.solomkinmv.graphics.lab2.types.Vector3D;
 
 import java.awt.*;
 
@@ -65,10 +65,10 @@ public class WireframeDrawing implements Drawing {
     }
 
     private void drawNormal(Point3D a, Point3D b, Point3D c) {
-        Vector v1 = new Vector(a, b);
-        Vector v2 = new Vector(a, c);
+        Vector3D v1 = new Vector3D(a, b);
+        Vector3D v2 = new Vector3D(a, c);
 
-        Vector n = v1.normal(v2);
+        Vector3D n = v1.normal(v2);
         Point3D center = findCenter(a, b, c);
         Point3D vp = new Point3D(center.x - n.x * NORMAL_LENGTH, center.y - n.y * NORMAL_LENGTH, center.z - n.z * NORMAL_LENGTH);
         graphics.line(isometricTransformer.transform(center), isometricTransformer.transform(vp), Color.red);
