@@ -1,10 +1,15 @@
 package io.github.solomkinmv.graphics.lab2;
 
+import io.github.solomkinmv.graphics.lab2.types.Point3D;
+import io.github.solomkinmv.graphics.lab2.types.Triangle;
+import io.github.solomkinmv.graphics.lab2.types.Vector3D;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BallDemo {
 
@@ -29,21 +34,21 @@ public class BallDemo {
                 g2.fillRect(0, 0, getWidth(), getHeight());
 
                 List<Triangle> tris = new ArrayList<>();
-                tris.add(new Triangle(new Vertex(100, 100, 100),
-                                      new Vertex(-100, -100, 100),
-                                      new Vertex(-100, 100, -100),
+                tris.add(new Triangle(new Point3D(100, 100, 100),
+                                      new Point3D(-100, -100, 100),
+                                      new Point3D(-100, 100, -100),
                                       Color.WHITE));
-                tris.add(new Triangle(new Vertex(100, 100, 100),
-                                      new Vertex(-100, -100, 100),
-                                      new Vertex(100, -100, -100),
+                tris.add(new Triangle(new Point3D(100, 100, 100),
+                                      new Point3D(-100, -100, 100),
+                                      new Point3D(100, -100, -100),
                                       Color.RED));
-                tris.add(new Triangle(new Vertex(-100, 100, -100),
-                                      new Vertex(100, -100, -100),
-                                      new Vertex(100, 100, 100),
+                tris.add(new Triangle(new Point3D(-100, 100, -100),
+                                      new Point3D(100, -100, -100),
+                                      new Point3D(100, 100, 100),
                                       Color.GREEN));
-                tris.add(new Triangle(new Vertex(-100, 100, -100),
-                                      new Vertex(100, -100, -100),
-                                      new Vertex(-100, -100, 100),
+                tris.add(new Triangle(new Point3D(-100, 100, -100),
+                                      new Point3D(100, -100, -100),
+                                      new Point3D(-100, -100, 100),
                                       Color.BLUE));
 
                 for (int i = 0; i < 4; i++) {
@@ -71,29 +76,23 @@ public class BallDemo {
                 for (int q = 0; q < zBuffer.length; q++) {
                     zBuffer[q] = Double.NEGATIVE_INFINITY;
                 }
-
                 for (Triangle t : tris) {
-                    Vertex v1 = transform.transform(t.v1);
-                    v1.x += getWidth() / 2;
-                    v1.y += getHeight() / 2;
-                    Vertex v2 = transform.transform(t.v2);
-                    v2.x += getWidth() / 2;
-                    v2.y += getHeight() / 2;
-                    Vertex v3 = transform.transform(t.v3);
-                    v3.x += getWidth() / 2;
-                    v3.y += getHeight() / 2;
+                    Point3D v1 = transform.transform(t.v1);
+                    v1 = new Point3D(v1.x + getWidth() / 2., v1.y + getHeight() / 2., v1.z);
+                    Point3D v2 = transform.transform(t.v2);
+                    v2 = new Point3D(v2.x + getWidth() / 2., v2.y + getHeight() / 2., v2.z);
+                    Point3D v3 = transform.transform(t.v3);
+                    v3 = new Point3D(v3.x + getWidth() / 2., v3.y + getHeight() / 2., v3.z);
 
-                    Vertex ab = new Vertex(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
-                    Vertex ac = new Vertex(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
-                    Vertex norm = new Vertex(
+                    Vector3D ab = new Vector3D(v1, v2);
+                    Vector3D ac = new Vector3D(v1, v3);
+                    Vector3D norm = new Vector3D(
                             ab.y * ac.z - ab.z * ac.y,
                             ab.z * ac.x - ab.x * ac.z,
                             ab.x * ac.y - ab.y * ac.x
                     );
                     double normalLength = Math.sqrt(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z);
-                    norm.x /= normalLength;
-                    norm.y /= normalLength;
-                    norm.z /= normalLength;
+                    norm = norm.divide(normalLength);
 
                     double angleCos = Math.abs(norm.z);
 
@@ -130,7 +129,7 @@ public class BallDemo {
         headingSlider.addChangeListener(e -> renderPanel.repaint());
         pitchSlider.addChangeListener(e -> renderPanel.repaint());
 
-        frame.setSize(400, 400);
+        frame.setSize(800, 800);
         frame.setVisible(true);
     }
 
@@ -149,49 +148,25 @@ public class BallDemo {
     public static List<Triangle> inflate(List<Triangle> tris) {
         List<Triangle> result = new ArrayList<>();
         for (Triangle t : tris) {
-            Vertex m1 = new Vertex((t.v1.x + t.v2.x) / 2, (t.v1.y + t.v2.y) / 2, (t.v1.z + t.v2.z) / 2);
-            Vertex m2 = new Vertex((t.v2.x + t.v3.x) / 2, (t.v2.y + t.v3.y) / 2, (t.v2.z + t.v3.z) / 2);
-            Vertex m3 = new Vertex((t.v1.x + t.v3.x) / 2, (t.v1.y + t.v3.y) / 2, (t.v1.z + t.v3.z) / 2);
+            Point3D m1 = new Point3D((t.v1.x + t.v2.x) / 2, (t.v1.y + t.v2.y) / 2, (t.v1.z + t.v2.z) / 2);
+            Point3D m2 = new Point3D((t.v2.x + t.v3.x) / 2, (t.v2.y + t.v3.y) / 2, (t.v2.z + t.v3.z) / 2);
+            Point3D m3 = new Point3D((t.v1.x + t.v3.x) / 2, (t.v1.y + t.v3.y) / 2, (t.v1.z + t.v3.z) / 2);
             result.add(new Triangle(t.v1, m1, m3, t.color));
             result.add(new Triangle(t.v2, m1, m2, t.color));
             result.add(new Triangle(t.v3, m2, m3, t.color));
             result.add(new Triangle(m1, m2, m3, t.color));
         }
-        for (Triangle t : result) {
-            for (Vertex v : new Vertex[]{t.v1, t.v2, t.v3}) {
-                double l = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z) / Math.sqrt(30000);
-                v.x /= l;
-                v.y /= l;
-                v.z /= l;
-            }
-        }
-        return result;
+        return result.stream()
+                     .map(triangle -> new Triangle(
+                             inflate(triangle.v1),
+                             inflate(triangle.v2),
+                             inflate(triangle.v3)
+                     )).collect(Collectors.toList());
     }
-}
 
-class Vertex {
-    double x;
-    double y;
-    double z;
-
-    Vertex(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-}
-
-class Triangle {
-    Vertex v1;
-    Vertex v2;
-    Vertex v3;
-    Color color;
-
-    Triangle(Vertex v1, Vertex v2, Vertex v3, Color color) {
-        this.v1 = v1;
-        this.v2 = v2;
-        this.v3 = v3;
-        this.color = color;
+    private static Point3D inflate(Point3D point) {
+        double l = Math.sqrt(point.x * point.x + point.y * point.y + point.z * point.z) / Math.sqrt(30000);
+        return point.divide(l);
     }
 }
 
@@ -215,8 +190,8 @@ class Matrix3 {
         return new Matrix3(result);
     }
 
-    Vertex transform(Vertex in) {
-        return new Vertex(
+    Point3D transform(Point3D in) {
+        return new Point3D(
                 in.x * values[0] + in.y * values[3] + in.z * values[6],
                 in.x * values[1] + in.y * values[4] + in.z * values[7],
                 in.x * values[2] + in.y * values[5] + in.z * values[8]
