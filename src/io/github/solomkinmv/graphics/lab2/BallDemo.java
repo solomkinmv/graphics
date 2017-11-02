@@ -1,5 +1,6 @@
 package io.github.solomkinmv.graphics.lab2;
 
+import io.github.solomkinmv.graphics.lab2.generator.BallPolygonsGenerator;
 import io.github.solomkinmv.graphics.lab2.types.Matrix;
 import io.github.solomkinmv.graphics.lab2.types.Point3D;
 import io.github.solomkinmv.graphics.lab2.types.Triangle;
@@ -8,9 +9,6 @@ import io.github.solomkinmv.graphics.lab2.types.Vector3D;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class BallDemo {
 
@@ -34,27 +32,7 @@ public class BallDemo {
                 g2.setColor(Color.BLACK);
                 g2.fillRect(0, 0, getWidth(), getHeight());
 
-                List<Triangle> tris = new ArrayList<>();
-                tris.add(new Triangle(new Point3D(100, 100, 100),
-                                      new Point3D(-100, -100, 100),
-                                      new Point3D(-100, 100, -100),
-                                      Color.WHITE));
-                tris.add(new Triangle(new Point3D(100, 100, 100),
-                                      new Point3D(-100, -100, 100),
-                                      new Point3D(100, -100, -100),
-                                      Color.RED));
-                tris.add(new Triangle(new Point3D(-100, 100, -100),
-                                      new Point3D(100, -100, -100),
-                                      new Point3D(100, 100, 100),
-                                      Color.GREEN));
-                tris.add(new Triangle(new Point3D(-100, 100, -100),
-                                      new Point3D(100, -100, -100),
-                                      new Point3D(-100, -100, 100),
-                                      Color.BLUE));
-
-                for (int i = 0; i < 4; i++) {
-                    tris = inflate(tris);
-                }
+                Triangle[] tris = new BallPolygonsGenerator(100).generate();
 
                 double heading = Math.toRadians(headingSlider.getValue());
                 Matrix headingTransform = new Matrix(new double[][]{
@@ -144,29 +122,5 @@ public class BallDemo {
         int blue = (int) Math.pow(blueLinear, 1 / 2.4);
 
         return new Color(red, green, blue);
-    }
-
-    private static List<Triangle> inflate(List<Triangle> tris) {
-        List<Triangle> result = new ArrayList<>();
-        for (Triangle t : tris) {
-            Point3D m1 = new Point3D((t.v1.x + t.v2.x) / 2, (t.v1.y + t.v2.y) / 2, (t.v1.z + t.v2.z) / 2);
-            Point3D m2 = new Point3D((t.v2.x + t.v3.x) / 2, (t.v2.y + t.v3.y) / 2, (t.v2.z + t.v3.z) / 2);
-            Point3D m3 = new Point3D((t.v1.x + t.v3.x) / 2, (t.v1.y + t.v3.y) / 2, (t.v1.z + t.v3.z) / 2);
-            result.add(new Triangle(t.v1, m1, m3, t.color));
-            result.add(new Triangle(t.v2, m1, m2, t.color));
-            result.add(new Triangle(t.v3, m2, m3, t.color));
-            result.add(new Triangle(m1, m2, m3, t.color));
-        }
-        return result.stream()
-                     .map(triangle -> new Triangle(
-                             inflate(triangle.v1),
-                             inflate(triangle.v2),
-                             inflate(triangle.v3)
-                     )).collect(Collectors.toList());
-    }
-
-    private static Point3D inflate(Point3D point) {
-        double l = Math.sqrt(point.x * point.x + point.y * point.y + point.z * point.z) / Math.sqrt(30000);
-        return point.divide(l);
     }
 }
