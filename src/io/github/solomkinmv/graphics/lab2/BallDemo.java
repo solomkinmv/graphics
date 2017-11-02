@@ -1,5 +1,6 @@
 package io.github.solomkinmv.graphics.lab2;
 
+import io.github.solomkinmv.graphics.lab2.types.Matrix;
 import io.github.solomkinmv.graphics.lab2.types.Point3D;
 import io.github.solomkinmv.graphics.lab2.types.Triangle;
 import io.github.solomkinmv.graphics.lab2.types.Vector3D;
@@ -56,18 +57,18 @@ public class BallDemo {
                 }
 
                 double heading = Math.toRadians(headingSlider.getValue());
-                Matrix3 headingTransform = new Matrix3(new double[]{
-                        Math.cos(heading), 0, -Math.sin(heading),
-                        0, 1, 0,
-                        Math.sin(heading), 0, Math.cos(heading)
+                Matrix headingTransform = new Matrix(new double[][]{
+                        {Math.cos(heading), 0, -Math.sin(heading)},
+                        {0, 1, 0},
+                        {Math.sin(heading), 0, Math.cos(heading)}
                 });
                 double pitch = Math.toRadians(pitchSlider.getValue());
-                Matrix3 pitchTransform = new Matrix3(new double[]{
-                        1, 0, 0,
-                        0, Math.cos(pitch), Math.sin(pitch),
-                        0, -Math.sin(pitch), Math.cos(pitch)
+                Matrix pitchTransform = new Matrix(new double[][]{
+                        {1, 0, 0},
+                        {0, Math.cos(pitch), Math.sin(pitch)},
+                        {0, -Math.sin(pitch), Math.cos(pitch)}
                 });
-                Matrix3 transform = headingTransform.multiply(pitchTransform);
+                Matrix transform = headingTransform.multiply(pitchTransform);
 
                 BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -133,7 +134,7 @@ public class BallDemo {
         frame.setVisible(true);
     }
 
-    public static Color getShade(Color color, double shade) {
+    private static Color getShade(Color color, double shade) {
         double redLinear = Math.pow(color.getRed(), 2.4) * shade;
         double greenLinear = Math.pow(color.getGreen(), 2.4) * shade;
         double blueLinear = Math.pow(color.getBlue(), 2.4) * shade;
@@ -145,7 +146,7 @@ public class BallDemo {
         return new Color(red, green, blue);
     }
 
-    public static List<Triangle> inflate(List<Triangle> tris) {
+    private static List<Triangle> inflate(List<Triangle> tris) {
         List<Triangle> result = new ArrayList<>();
         for (Triangle t : tris) {
             Point3D m1 = new Point3D((t.v1.x + t.v2.x) / 2, (t.v1.y + t.v2.y) / 2, (t.v1.z + t.v2.z) / 2);
@@ -167,34 +168,5 @@ public class BallDemo {
     private static Point3D inflate(Point3D point) {
         double l = Math.sqrt(point.x * point.x + point.y * point.y + point.z * point.z) / Math.sqrt(30000);
         return point.divide(l);
-    }
-}
-
-class Matrix3 {
-    double[] values;
-
-    Matrix3(double[] values) {
-        this.values = values;
-    }
-
-    Matrix3 multiply(Matrix3 other) {
-        double[] result = new double[9];
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                for (int i = 0; i < 3; i++) {
-                    result[row * 3 + col] +=
-                            this.values[row * 3 + i] * other.values[i * 3 + col];
-                }
-            }
-        }
-        return new Matrix3(result);
-    }
-
-    Point3D transform(Point3D in) {
-        return new Point3D(
-                in.x * values[0] + in.y * values[3] + in.z * values[6],
-                in.x * values[1] + in.y * values[4] + in.z * values[7],
-                in.x * values[2] + in.y * values[5] + in.z * values[8]
-        );
     }
 }
