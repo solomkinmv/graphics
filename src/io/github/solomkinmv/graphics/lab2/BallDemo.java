@@ -1,7 +1,7 @@
 package io.github.solomkinmv.graphics.lab2;
 
 import io.github.solomkinmv.graphics.lab2.generator.BallPolygonsGenerator;
-import io.github.solomkinmv.graphics.lab2.types.Matrix;
+import io.github.solomkinmv.graphics.lab2.graphics.Transformer;
 import io.github.solomkinmv.graphics.lab2.types.Point3D;
 import io.github.solomkinmv.graphics.lab2.types.Triangle;
 import io.github.solomkinmv.graphics.lab2.types.Vector3D;
@@ -18,8 +18,8 @@ public class BallDemo {
         pane.setLayout(new BorderLayout());
 
         // slider to control horizontal rotation
-        JSlider headingSlider = new JSlider(-180, 180, 0);
-        pane.add(headingSlider, BorderLayout.SOUTH);
+        JSlider rotateSlider = new JSlider(-180, 180, 0);
+        pane.add(rotateSlider, BorderLayout.SOUTH);
 
         // slider to control vertical rotation
         JSlider pitchSlider = new JSlider(SwingConstants.VERTICAL, -90, 90, 0);
@@ -34,19 +34,7 @@ public class BallDemo {
 
                 Triangle[] tris = new BallPolygonsGenerator(100).generate();
 
-                double heading = Math.toRadians(headingSlider.getValue());
-                Matrix headingTransform = new Matrix(new double[][]{
-                        {Math.cos(heading), 0, -Math.sin(heading)},
-                        {0, 1, 0},
-                        {Math.sin(heading), 0, Math.cos(heading)}
-                });
-                double pitch = Math.toRadians(pitchSlider.getValue());
-                Matrix pitchTransform = new Matrix(new double[][]{
-                        {1, 0, 0},
-                        {0, Math.cos(pitch), Math.sin(pitch)},
-                        {0, -Math.sin(pitch), Math.cos(pitch)}
-                });
-                Matrix transform = headingTransform.multiply(pitchTransform);
+                Transformer transform = new Transformer(rotateSlider.getValue(), 0, pitchSlider.getValue());
 
                 BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -63,15 +51,7 @@ public class BallDemo {
                     Point3D v3 = transform.transform(t.v3);
                     v3 = new Point3D(v3.x + getWidth() / 2., v3.y + getHeight() / 2., v3.z);
 
-                    Vector3D ab = new Vector3D(v1, v2);
-                    Vector3D ac = new Vector3D(v1, v3);
-                    Vector3D norm = new Vector3D(
-                            ab.y * ac.z - ab.z * ac.y,
-                            ab.z * ac.x - ab.x * ac.z,
-                            ab.x * ac.y - ab.y * ac.x
-                    );
-                    double normalLength = Math.sqrt(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z);
-                    norm = norm.divide(normalLength);
+                    Vector3D norm = new Triangle(v1, v2, v3).normal();
 
                     double angleCos = Math.abs(norm.z);
 
@@ -105,7 +85,7 @@ public class BallDemo {
         };
         pane.add(renderPanel, BorderLayout.CENTER);
 
-        headingSlider.addChangeListener(e -> renderPanel.repaint());
+        rotateSlider.addChangeListener(e -> renderPanel.repaint());
         pitchSlider.addChangeListener(e -> renderPanel.repaint());
 
         frame.setSize(800, 800);
