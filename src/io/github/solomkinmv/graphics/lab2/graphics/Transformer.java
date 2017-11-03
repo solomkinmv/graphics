@@ -6,13 +6,13 @@ import io.github.solomkinmv.graphics.lab2.types.Triangle;
 
 public class Transformer {
     private final double rotate;
-    private final double heading;
+    private final double roll;
     private final double pitch;
     private final Matrix transformationMatrix;
 
-    public Transformer(int rotate, int heading, int pitch) {
+    public Transformer(int rotate, int roll, int pitch) {
         this.rotate = Math.toRadians(rotate);
-        this.heading = Math.toRadians(heading);
+        this.roll = Math.toRadians(roll);
         this.pitch = Math.toRadians(pitch);
         transformationMatrix = rotateMatrix().multiply(pitchMatrix()).multiply(headingMatrix());
     }
@@ -35,9 +35,9 @@ public class Transformer {
 
     private Matrix headingMatrix() {
         return new Matrix(new double[][]{
-                {Math.cos(heading), 0, Math.sin(heading)},
+                {Math.cos(roll), 0, Math.sin(roll)},
                 {0, 1, 0},
-                {-Math.sin(heading), 0, Math.cos(heading)}
+                {-Math.sin(roll), 0, Math.cos(roll)}
         });
     }
 
