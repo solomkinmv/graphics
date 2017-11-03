@@ -106,7 +106,12 @@ public class Triangle {
         return b1 * v1.z + b2 * v2.z + b3 * v3.z;
     }
 
-    public Color shade(double angleCos) {
+    public Color shade() {
+        Vector3D norm = normal();
+
+        double angleCos = Math.abs(norm.z);
+
+
         double redLinear = Math.pow(color.getRed(), 2.4) * angleCos;
         double greenLinear = Math.pow(color.getGreen(), 2.4) * angleCos;
         double blueLinear = Math.pow(color.getBlue(), 2.4) * angleCos;

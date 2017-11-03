@@ -2,9 +2,7 @@ package io.github.solomkinmv.graphics.lab2;
 
 import io.github.solomkinmv.graphics.lab2.generator.BallPolygonsGenerator;
 import io.github.solomkinmv.graphics.lab2.graphics.Transformer;
-import io.github.solomkinmv.graphics.lab2.types.Point3D;
 import io.github.solomkinmv.graphics.lab2.types.Triangle;
-import io.github.solomkinmv.graphics.lab2.types.Vector3D;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,17 +45,13 @@ public class BallDemo {
                     t = transform.transform(t);
                     t = t.add(getWidth() / 2., getHeight() / 2., 0);
 
-                    Vector3D norm = t.normal();
-
-                    double angleCos = Math.abs(norm.z);
-
                     for (int y = t.minY(); y <= t.maxY(); y++) {
                         for (int x = t.minX(); x <= t.maxX(); x++) {
                             if (t.containsPoint(x, y)) {
                                 double depth = t.depth(x, y);
                                 int zIndex = y * img.getWidth() + x;
                                 if (zBuffer[zIndex] < depth) {
-                                    img.setRGB(x, y, t.shade(angleCos).getRGB());
+                                    img.setRGB(x, y, t.shade().getRGB());
                                     zBuffer[zIndex] = depth;
                                 }
                             }
