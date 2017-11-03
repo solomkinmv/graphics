@@ -32,7 +32,7 @@ public class BallDemo {
                 Triangle[] tris = new BallPolygonsGenerator(100).generate();
 
                 Image image = new ZBufferedImage(tris, getHeight(), getWidth(), rotateSlider.getValue(), 0,
-                                                 pitchSlider.getValue(), false).get();
+                                                 pitchSlider.getValue(), false, false).get();
 
                 g2.drawImage(image, 0, 0, null);
             }

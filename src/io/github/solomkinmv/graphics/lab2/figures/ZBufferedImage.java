@@ -17,14 +17,16 @@ public class ZBufferedImage {
     private final int width;
     private final int height;
     private final boolean showNormal;
+    private final boolean showGrid;
     private final Transformer transformer;
     private double[] zBuffer;
 
-    public ZBufferedImage(Triangle[] triangles, int height, int width, int rotate, int roll, int pitch, boolean showNormal) {
+    public ZBufferedImage(Triangle[] triangles, int height, int width, int rotate, int roll, int pitch, boolean showNormal, boolean showGrid) {
         this.triangles = triangles;
         this.width = width;
         this.height = height;
         this.showNormal = showNormal;
+        this.showGrid = showGrid;
         transformer = new Transformer(rotate, roll, pitch);
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         initZBuffer();
@@ -57,6 +59,11 @@ public class ZBufferedImage {
                 if (triangle.containsPoint(x, y)) {
                     drawPoint(x, y, triangle, triangle.shade());
                 }
+                if (showGrid) {
+                    drawLine(triangle.v1, triangle.v2, triangle, Color.black);
+                    drawLine(triangle.v1, triangle.v3, triangle, Color.black);
+                    drawLine(triangle.v2, triangle.v3, triangle, Color.black);
+                }
                 if (showNormal) {
                     drawNormal(triangle);
                 }
@@ -65,10 +72,10 @@ public class ZBufferedImage {
     }
 
     private void drawLine(Point3D p1, Point3D p2, Triangle triangle, Color color) {
-        double x1 = p1.x;
-        double x2 = p2.x;
-        double y1 = p1.y;
-        double y2 = p2.y;
+        int x1 = p1.getX();
+        int x2 = p2.getX();
+        int y1 = p1.getY();
+        int y2 = p2.getY();
 
         double dx = Math.abs(x2 - x1);
         double dy = Math.abs(y2 - y1);
@@ -76,12 +83,22 @@ public class ZBufferedImage {
 
         if (x1 > x2)
         {
-            double tmp = x1;
+            int tmp = x1;
             x1 = x2;
             x2 = tmp;
             tmp = y1;
             y1 = y2;
             y2 = tmp;
+        }
+
+        if (x1 == x2) {
+            drawHorizontalLine(x1, Math.min(y1, y2), Math.max(y1, y2), triangle, color);
+            return;
+        }
+
+        if (y1 == y2) {
+            drawVerticalLine(x1, x2, y1, triangle, color);
+            return;
         }
 
         int sy = (y2 >= y1) ? 1 : -1; // direction for y
@@ -90,8 +107,8 @@ public class ZBufferedImage {
         // note that this division needs to be done in a way that preserves the fractional part
         double error = 0; // no error at start
 
-        double y = y1;
-        for (double x = x1; x <= x2; x++)
+        int y = y1;
+        for (int x = x1; x <= x2; x++)
         {
             drawPoint(x, y, triangle, color);
             error += deltaerror;
@@ -103,11 +120,23 @@ public class ZBufferedImage {
         }
     }
 
-    private void drawPoint(double x, double y, Triangle triangle, Color color) {
+    private void drawVerticalLine(int x1, int x2, int y, Triangle triangle, Color color) {
+        for (int x = x1; x <= x2; x++) {
+            drawPoint(x, y, triangle, color);
+        }
+    }
+
+    private void drawHorizontalLine(int x, int y1, int y2, Triangle triangle, Color color) {
+        for (int y = y1; y <= y2; y++) {
+            drawPoint(x, y, triangle, color);
+        }
+    }
+
+    private void drawPoint(int x, int y, Triangle triangle, Color color) {
         double depth = triangle.depth(x, y);
-        int zIndex = (int) y * width + (int) x;
+        int zIndex = y * width + x;
         if (zBuffer[zIndex] < depth && x <= width && x >= 0 && y <= height && y >= 0) {
-            image.setRGB((int) x, (int) y, color.getRGB());
+            image.setRGB(x, y, color.getRGB());
             zBuffer[zIndex] = depth;
         }
     }
