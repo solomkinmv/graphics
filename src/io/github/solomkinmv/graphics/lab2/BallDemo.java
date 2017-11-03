@@ -51,19 +51,13 @@ public class BallDemo {
 
                     double angleCos = Math.abs(norm.z);
 
-
-                    double triangleArea = t.area();
-
                     for (int y = t.minY(); y <= t.maxY(); y++) {
                         for (int x = t.minX(); x <= t.maxX(); x++) {
-                            double b1 = ((y - t.v3.y) * (t.v2.x - t.v3.x) + (t.v2.y - t.v3.y) * (t.v3.x - x)) / triangleArea;
-                            double b2 = ((y - t.v1.y) * (t.v3.x - t.v1.x) + (t.v3.y - t.v1.y) * (t.v1.x - x)) / triangleArea;
-                            double b3 = ((y - t.v2.y) * (t.v1.x - t.v2.x) + (t.v1.y - t.v2.y) * (t.v2.x - x)) / triangleArea;
-                            if (b1 >= 0 && b1 <= 1 && b2 >= 0 && b2 <= 1 && b3 >= 0 && b3 <= 1) {
-                                double depth = b1 * t.v1.z + b2 * t.v2.z + b3 * t.v3.z;
+                            if (t.containsPoint(x, y)) {
+                                double depth = t.depth(x, y);
                                 int zIndex = y * img.getWidth() + x;
                                 if (zBuffer[zIndex] < depth) {
-                                    img.setRGB(x, y, getShade(t.color, angleCos).getRGB());
+                                    img.setRGB(x, y, t.shade(angleCos).getRGB());
                                     zBuffer[zIndex] = depth;
                                 }
                             }
@@ -82,17 +76,5 @@ public class BallDemo {
 
         frame.setSize(800, 800);
         frame.setVisible(true);
-    }
-
-    private static Color getShade(Color color, double shade) {
-        double redLinear = Math.pow(color.getRed(), 2.4) * shade;
-        double greenLinear = Math.pow(color.getGreen(), 2.4) * shade;
-        double blueLinear = Math.pow(color.getBlue(), 2.4) * shade;
-
-        int red = (int) Math.pow(redLinear, 1 / 2.4);
-        int green = (int) Math.pow(greenLinear, 1 / 2.4);
-        int blue = (int) Math.pow(blueLinear, 1 / 2.4);
-
-        return new Color(red, green, blue);
     }
 }

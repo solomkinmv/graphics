@@ -82,8 +82,45 @@ public class Triangle {
         return minMax.apply(toAxisValue.apply(v1), minMax.apply(toAxisValue.apply(v2), toAxisValue.apply(v3)));
     }
 
+    public boolean containsPoint(Point3D point) {
+        return containsPoint(point.x, point.y);
+    }
+
+    public boolean containsPoint(double x, double y) {
+        double triangleArea = area();
+
+        double b1 = ((y - v3.y) * (v2.x - v3.x) + (v2.y - v3.y) * (v3.x - x)) / triangleArea;
+        double b2 = ((y - v1.y) * (v3.x - v1.x) + (v3.y - v1.y) * (v1.x - x)) / triangleArea;
+        double b3 = ((y - v2.y) * (v1.x - v2.x) + (v1.y - v2.y) * (v2.x - x)) / triangleArea;
+
+        return b1 >= 0 && b1 <= 1 && b2 >= 0 && b2 <= 1 && b3 >= 0 && b3 <= 1;
+    }
+
+    public double depth(double x, double y) {
+        double triangleArea = area();
+
+        double b1 = ((y - v3.y) * (v2.x - v3.x) + (v2.y - v3.y) * (v3.x - x)) / triangleArea;
+        double b2 = ((y - v1.y) * (v3.x - v1.x) + (v3.y - v1.y) * (v1.x - x)) / triangleArea;
+        double b3 = ((y - v2.y) * (v1.x - v2.x) + (v1.y - v2.y) * (v2.x - x)) / triangleArea;
+
+        return b1 * v1.z + b2 * v2.z + b3 * v3.z;
+    }
+
+    public Color shade(double angleCos) {
+        double redLinear = Math.pow(color.getRed(), 2.4) * angleCos;
+        double greenLinear = Math.pow(color.getGreen(), 2.4) * angleCos;
+        double blueLinear = Math.pow(color.getBlue(), 2.4) * angleCos;
+
+        int red = (int) Math.pow(redLinear, 1 / 2.4);
+        int green = (int) Math.pow(greenLinear, 1 / 2.4);
+        int blue = (int) Math.pow(blueLinear, 1 / 2.4);
+
+        return new Color(red, green, blue);
+    }
+
     @Override
     public String toString() {
-        return String.format("Vector[(%.2f, %.2f, %.2f), (%.2f, %.2f, %.2f), (%.2f, %.2f, %.2f)]", v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z);
+        return String.format("Vector[(%.2f, %.2f, %.2f), (%.2f, %.2f, %.2f), (%.2f, %.2f, %.2f)]", v1.x, v1.y, v1.z,
+                             v2.x, v2.y, v2.z, v3.x, v3.y, v3.z);
     }
 }
