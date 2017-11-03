@@ -11,7 +11,7 @@ public class TrianglesCreator {
 
         for (int i = 0; i < points.length; i++) {
             for (int j = 0; j < points[i].length; j++) {
-                int jMax = points[i].length - 1;
+                int jMax = points[i].length;
                 int iMax = points.length - 1;
 
                 boolean hasSidePoint = continuous || j < jMax;
