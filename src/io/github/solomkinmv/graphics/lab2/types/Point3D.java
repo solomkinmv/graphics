@@ -35,4 +35,8 @@ public class Point3D {
     public Point3D divide(double val) {
         return new Point3D(x / val, y / val, z / val);
     }
+
+    public Point3D add(double xDelta, double yDelta, double zDelta) {
+        return new Point3D(x + xDelta, y + yDelta, z + zDelta);
+    }
 }

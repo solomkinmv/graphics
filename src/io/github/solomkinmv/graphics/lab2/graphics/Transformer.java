@@ -2,6 +2,7 @@ package io.github.solomkinmv.graphics.lab2.graphics;
 
 import io.github.solomkinmv.graphics.lab2.types.Matrix;
 import io.github.solomkinmv.graphics.lab2.types.Point3D;
+import io.github.solomkinmv.graphics.lab2.types.Triangle;
 
 public class Transformer {
     private final double rotate;
@@ -42,5 +43,11 @@ public class Transformer {
 
     public Point3D transform(Point3D point) {
         return transformationMatrix.transform(point);
+    }
+
+    public Triangle transform(Triangle triangle) {
+        return new Triangle(transformationMatrix.transform(triangle.v1),
+                            transformationMatrix.transform(triangle.v2),
+                            transformationMatrix.transform(triangle.v3), triangle.color);
     }
 }
