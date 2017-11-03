@@ -55,12 +55,7 @@ public class ZBufferedImage {
         for (int y = triangle.minY(); y <= triangle.maxY(); y++) {
             for (int x = triangle.minX(); x <= triangle.maxX(); x++) {
                 if (triangle.containsPoint(x, y)) {
-                    double depth = triangle.depth(x, y);
-                    int zIndex = y * width + x;
-                    if (zBuffer[zIndex] < depth) {
-                        image.setRGB(x, y, triangle.shade().getRGB());
-                        zBuffer[zIndex] = depth;
-                    }
+                    drawPoint(x, y, triangle, triangle.shade());
                 }
                 if (showNormal) {
                     drawNormal(triangle);
@@ -98,18 +93,22 @@ public class ZBufferedImage {
         double y = y1;
         for (double x = x1; x <= x2; x++)
         {
-            double depth = triangle.depth(x, y);
-            int zIndex = (int) y * width + (int) x;
-            if (zBuffer[zIndex] < depth && x <= width && x >= 0 && y <= height && y >= 0) {
-                image.setRGB((int) x, (int) y, color.getRGB());
-                zBuffer[zIndex] = depth;
-            }
+            drawPoint(x, y, triangle, color);
             error += deltaerror;
             if (error >= 0.5)
             {
                 y += sy;
                 error -= 1;
             }
+        }
+    }
+
+    private void drawPoint(double x, double y, Triangle triangle, Color color) {
+        double depth = triangle.depth(x, y);
+        int zIndex = (int) y * width + (int) x;
+        if (zBuffer[zIndex] < depth && x <= width && x >= 0 && y <= height && y >= 0) {
+            image.setRGB((int) x, (int) y, color.getRGB());
+            zBuffer[zIndex] = depth;
         }
     }
 
