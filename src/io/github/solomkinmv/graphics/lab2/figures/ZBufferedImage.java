@@ -20,6 +20,7 @@ public class ZBufferedImage {
     private final boolean showGrid;
     private final Transformer transformer;
     private double[] zBuffer;
+    private Color[] colors;
 
     public ZBufferedImage(Triangle[] triangles, int height, int width, int rotate, int roll, int pitch, boolean showNormal, boolean showGrid) {
         this.triangles = triangles;
@@ -36,6 +37,7 @@ public class ZBufferedImage {
 
     private void initZBuffer() {
         zBuffer = new double[height * width];
+        colors = new Color[height * width];
 
         for (int q = 0; q < zBuffer.length; q++) {
             zBuffer[q] = Double.NEGATIVE_INFINITY;
@@ -45,8 +47,9 @@ public class ZBufferedImage {
     private void drawNormal(Triangle triangle) {
         Vector3D n = triangle.normal();
         Point3D center = triangle.center();
-        Point3D vp = new Point3D(center.x - n.x * NORMAL_LENGTH, center.y - n.y * NORMAL_LENGTH, center.z - n.z * NORMAL_LENGTH);
-        drawLine(center, vp, triangle, Color.red);
+        Point3D vp = new Point3D(center.x - n.x * NORMAL_LENGTH, center.y - n.y * NORMAL_LENGTH,
+                                 center.z - n.z * NORMAL_LENGTH);
+        markLine(center, vp, triangle, Color.red);
 
     }
 
@@ -57,12 +60,12 @@ public class ZBufferedImage {
         for (int y = triangle.minY(); y <= triangle.maxY(); y++) {
             for (int x = triangle.minX(); x <= triangle.maxX(); x++) {
                 if (triangle.containsPoint(x, y)) {
-                    drawPoint(x, y, triangle, triangle.shade());
+                    markPoint(x, y, triangle, triangle.color);
                 }
                 if (showGrid) {
-                    drawLine(triangle.v1, triangle.v2, triangle, Color.black);
-                    drawLine(triangle.v1, triangle.v3, triangle, Color.black);
-                    drawLine(triangle.v2, triangle.v3, triangle, Color.black);
+                    markLine(triangle.v1, triangle.v2, triangle, Color.black);
+                    markLine(triangle.v1, triangle.v3, triangle, Color.black);
+                    markLine(triangle.v2, triangle.v3, triangle, Color.black);
                 }
                 if (showNormal) {
                     drawNormal(triangle);
@@ -71,7 +74,7 @@ public class ZBufferedImage {
         }
     }
 
-    private void drawLine(Point3D p1, Point3D p2, Triangle triangle, Color color) {
+    private void markLine(Point3D p1, Point3D p2, Triangle triangle, Color color) {
         int x1 = p1.getX();
         int x2 = p2.getX();
         int y1 = p1.getY();
@@ -81,8 +84,7 @@ public class ZBufferedImage {
         double dy = Math.abs(y2 - y1);
 
 
-        if (x1 > x2)
-        {
+        if (x1 > x2) {
             int tmp = x1;
             x1 = x2;
             x2 = tmp;
@@ -92,12 +94,12 @@ public class ZBufferedImage {
         }
 
         if (x1 == x2) {
-            drawHorizontalLine(x1, Math.min(y1, y2), Math.max(y1, y2), triangle, color);
+            markHorizontalLine(x1, Math.min(y1, y2), Math.max(y1, y2), triangle, color);
             return;
         }
 
         if (y1 == y2) {
-            drawVerticalLine(x1, x2, y1, triangle, color);
+            markVerticalLine(x1, x2, y1, triangle, color);
             return;
         }
 
@@ -108,41 +110,70 @@ public class ZBufferedImage {
         double error = 0; // no error at start
 
         int y = y1;
-        for (int x = x1; x <= x2; x++)
-        {
-            drawPoint(x, y, triangle, color);
+        for (int x = x1; x <= x2; x++) {
+            markPoint(x, y, triangle, color);
             error += deltaerror;
-            if (error >= 0.5)
-            {
+            if (error >= 0.5) {
                 y += sy;
                 error -= 1;
             }
         }
     }
 
-    private void drawVerticalLine(int x1, int x2, int y, Triangle triangle, Color color) {
+    private void markVerticalLine(int x1, int x2, int y, Triangle triangle, Color color) {
         for (int x = x1; x <= x2; x++) {
-            drawPoint(x, y, triangle, color);
+            markPoint(x, y, triangle, color);
         }
     }
 
-    private void drawHorizontalLine(int x, int y1, int y2, Triangle triangle, Color color) {
+    private void markHorizontalLine(int x, int y1, int y2, Triangle triangle, Color color) {
         for (int y = y1; y <= y2; y++) {
-            drawPoint(x, y, triangle, color);
+            markPoint(x, y, triangle, color);
         }
     }
 
-    private void drawPoint(int x, int y, Triangle triangle, Color color) {
+    private void markPoint(int x, int y, Triangle triangle, Color color) {
         double depth = triangle.depth(x, y);
         int zIndex = y * width + x;
-        if (zBuffer[zIndex] < depth && x <= width && x >= 0 && y <= height && y >= 0) {
-            image.setRGB(x, y, color.getRGB());
+        if (zBuffer[zIndex] <= depth && x <= width && x >= 0 && y <= height && y >= 0) {
+            colors[zIndex] = color;
             zBuffer[zIndex] = depth;
+        }
+    }
+
+    private void normalizeColorsAndDrawPoints() {
+        double depthMin = Double.MAX_VALUE, depthMax = Double.MIN_VALUE;
+        for (int i = 0; i < colors.length; i++) {
+            if (colors[i] == null) {
+                continue;
+            }
+
+            double depth = zBuffer[i];
+            if (depth < depthMin) depthMin = depth;
+            if (depth > depthMax) depthMax = depth;
+        }
+
+        double bottomShift = 0 - depthMin;
+        double topBoundary = depthMax + bottomShift;
+
+        for (int i = 0; i < colors.length; i++) {
+            if (colors[i] == null) {
+                continue;
+            }
+
+            if (Color.black.equals(colors[i])) {
+                image.setRGB(i % width, i / width, colors[i].getRGB());
+                continue;
+            }
+
+            int color = (int) ((zBuffer[i] + bottomShift) * 255 / topBoundary);
+            image.setRGB(i % width, i / width, new Color(color, color, color).getRGB());
         }
     }
 
     private void generateImage() {
         Arrays.stream(triangles).forEach(this::processTriangle);
+        normalizeColorsAndDrawPoints();
     }
 
     public Image get() {
