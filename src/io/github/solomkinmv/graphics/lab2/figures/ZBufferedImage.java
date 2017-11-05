@@ -65,15 +65,16 @@ public class ZBufferedImage {
                 if (triangle.containsPoint(x, y)) {
                     markPoint(x, y, triangle, triangle.shade());
                 }
-                if (showGrid) {
-                    markLine(triangle.v1, triangle.v2, triangle, Color.black);
-                    markLine(triangle.v1, triangle.v3, triangle, Color.black);
-                    markLine(triangle.v2, triangle.v3, triangle, Color.black);
-                }
-                if (showNormal) {
-                    drawNormal(triangle);
-                }
             }
+        }
+
+        if (showGrid) {
+            markLine(triangle.v1, triangle.v2, triangle, Color.black);
+            markLine(triangle.v1, triangle.v3, triangle, Color.black);
+            markLine(triangle.v2, triangle.v3, triangle, Color.black);
+        }
+        if (showNormal) {
+            drawNormal(triangle);
         }
     }
 
