@@ -151,6 +151,11 @@ public class ZBufferedImage {
                 continue;
             }
 
+            if (Color.red.equals(colors[i])) {
+                image.setRGB(i % width, i / width, colors[i].getRGB());
+                continue;
+            }
+
             int color = (int) ((zBuffer[i] + bottomShift) * 255 / topBoundary);
             image.setRGB(i % width, i / width, new Color(color, color, color).getRGB());
         }

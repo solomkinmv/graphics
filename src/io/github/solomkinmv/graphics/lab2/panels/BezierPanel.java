@@ -1,11 +1,9 @@
 package io.github.solomkinmv.graphics.lab2.panels;
 
-import io.github.solomkinmv.graphics.lab2.figures.BezierFlat;
-import io.github.solomkinmv.graphics.lab2.figures.Drawing;
-import io.github.solomkinmv.graphics.lab2.figures.WireframeDrawing;
-import io.github.solomkinmv.graphics.lab2.generator.BezierPoints;
-import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
+import io.github.solomkinmv.graphics.lab2.figures.ZBufferedImage;
+import io.github.solomkinmv.graphics.lab2.generator.BezierPolygonsGenerator;
 import io.github.solomkinmv.graphics.lab2.types.Point2D;
+import io.github.solomkinmv.graphics.lab2.types.Triangle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,63 +13,69 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("Duplicates")
 public class BezierPanel implements GraphicPanels {
     private static final int SIZE = 1200;
-    private final GraphicCanvas flatCanvas;
+    private FigurePanel figurePanel;
     private JPanel panel;
-    private GraphicCanvas canvas;
-    private int fiAngle = 220;
-    private int thetaAngle = 60;
+    private int rotateAngle = 90;
+    private int rollAngle = 45;
+    private int pitchAngle;
     private int edges = 10;
     private int radius = 30;
     private int height = 30;
     private boolean showNormals;
     private String bezierPoints = "1,1;5,7;8,2;10,10;15,12";
     private List<Point2D> sourcePoints;
+    private boolean showGrid;
+    private boolean depthColors = true;
 
     public BezierPanel() {
         parseBezierPoints();
-        canvas = new GraphicCanvas(newBezierFunction(), SIZE, SIZE);
-        flatCanvas = new GraphicCanvas(newFlatBezierFunction(), SIZE / 2, SIZE / 2);
         init();
     }
 
     private void init() {
-        panel = new JPanel(new BorderLayout());
-        panel.add(canvas, BorderLayout.CENTER);
-
-        JPanel sidePanel = new JPanel(new BorderLayout());
-        sidePanel.add(createFlatPanel(), BorderLayout.NORTH);
-        sidePanel.add(createControls(), BorderLayout.SOUTH);
-        panel.add(sidePanel, BorderLayout.EAST);
-    }
-
-    private Component createFlatPanel() {
-        JPanel panel = new JPanel();
-        panel.add(flatCanvas);
-        return panel;
+        panel = new JPanel();
+        figurePanel = new FigurePanel();
+        panel.add(figurePanel);
+        panel.add(createControls());
     }
 
     private Component createControls() {
-        JPanel controlPanel = new JPanel(new GridLayout(7, 2));
+        JPanel controlPanel = new JPanel(new GridLayout(10, 2));
 
         setNavigationButtons(controlPanel);
         setEdgesSlider(controlPanel);
         setRadiusSpinner(controlPanel);
         setHeightSpinner(controlPanel);
         setBezierPointsEditor(controlPanel);
-        setNormalsShowCheckBox(controlPanel);
+        setCheckBoxes(controlPanel);
 
         return controlPanel;
     }
 
-    private void setNormalsShowCheckBox(JPanel controlPanel) {
-        JCheckBox normalsCheckBox = new JCheckBox("Show normals");
+    private void setCheckBoxes(JPanel controlPanel) {
+        JCheckBox normalsCheckBox = new JCheckBox("Show normals", showNormals);
         normalsCheckBox.addItemListener(e -> {
             showNormals = e.getStateChange() == ItemEvent.SELECTED;
             repaint();
         });
         controlPanel.add(normalsCheckBox);
+
+        JCheckBox gridCheckBox = new JCheckBox("Show grid", showGrid);
+        gridCheckBox.addItemListener(e -> {
+            showGrid = e.getStateChange() == ItemEvent.SELECTED;
+            repaint();
+        });
+        controlPanel.add(gridCheckBox);
+
+        JCheckBox depthColorsCheckBox = new JCheckBox("Use depth colors", depthColors);
+        depthColorsCheckBox.addItemListener(e -> {
+            depthColors = e.getStateChange() == ItemEvent.SELECTED;
+            repaint();
+        });
+        controlPanel.add(depthColorsCheckBox);
     }
 
     private void setBezierPointsEditor(JPanel controlPanel) {
@@ -97,11 +101,7 @@ public class BezierPanel implements GraphicPanels {
     }
 
     private void repaint() {
-        canvas.setDrawingFunction(newBezierFunction());
-        canvas.repaint();
-
-        flatCanvas.setDrawingFunction(newFlatBezierFunction());
-        flatCanvas.repaint();
+        figurePanel.repaint();
     }
 
     private void setRadiusSpinner(JPanel controlPanel) {
@@ -147,30 +147,44 @@ public class BezierPanel implements GraphicPanels {
     private void setNavigationButtons(JPanel controlPanel) {
         JButton leftButton = new JButton("left");
         leftButton.addActionListener(e -> {
-            fiAngle += 10;
+            rotateAngle = (rotateAngle + 10) % 360;
             repaint();
         });
 
         JButton rightButton = new JButton("right");
         rightButton.addActionListener(e -> {
-            fiAngle -= 10;
+            rotateAngle = (rotateAngle - 10) % 360;
+            repaint();
+        });
+
+        JButton pitchLeftButton = new JButton("pitch left");
+        pitchLeftButton.addActionListener(e -> {
+            pitchAngle = (pitchAngle + 10) % 360;
+            repaint();
+        });
+
+        JButton pitchRightButton = new JButton("pitch right");
+        pitchRightButton.addActionListener(e -> {
+            pitchAngle = (pitchAngle - 10) % 360;
             repaint();
         });
 
         JButton upButton = new JButton("up");
         upButton.addActionListener(e -> {
-            thetaAngle -= 10;
+            rollAngle = (rollAngle + 10) % 360;
             repaint();
         });
 
         JButton downButton = new JButton("down");
         downButton.addActionListener(e -> {
-            thetaAngle += 10;
+            rollAngle = (rollAngle - 10) % 360;
             repaint();
         });
 
         controlPanel.add(leftButton);
         controlPanel.add(rightButton);
+        controlPanel.add(pitchLeftButton);
+        controlPanel.add(pitchRightButton);
         controlPanel.add(upButton);
         controlPanel.add(downButton);
     }
@@ -179,13 +193,24 @@ public class BezierPanel implements GraphicPanels {
         return panel;
     }
 
-    private Function<Graphics, Drawing> newBezierFunction() {
-        return graphics -> new WireframeDrawing(graphics,
-                                                new BezierPoints(sourcePoints, radius, height, edges, edges),
-                                                fiAngle, thetaAngle, showNormals, true);
-    }
+    class FigurePanel extends JPanel {
 
-    private Function<Graphics, Drawing> newFlatBezierFunction() {
-        return graphics -> new BezierFlat(sourcePoints, graphics, edges, radius, height);
+        private FigurePanel() {
+            setPreferredSize(new Dimension(SIZE, SIZE));
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(Color.white);
+            g2.fillRect(0, 0, SIZE, SIZE);
+
+            Triangle[] tris = new BezierPolygonsGenerator(radius, height, edges, edges, sourcePoints).generate();
+
+            Image image = new ZBufferedImage(tris, SIZE, SIZE, rollAngle, rotateAngle,
+                                             pitchAngle, showNormals, showGrid, depthColors).get();
+
+            g2.drawImage(image, 0, 0, null);
+        }
     }
 }
