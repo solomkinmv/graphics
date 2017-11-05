@@ -80,62 +80,43 @@ public class ZBufferedImage {
         int y1 = p1.getY();
         int y2 = p2.getY();
 
-        double dx = Math.abs(x2 - x1);
-        double dy = Math.abs(y2 - y1);
-
-
-        if (x1 > x2) {
-            int tmp = x1;
-            x1 = x2;
-            x2 = tmp;
-            tmp = y1;
-            y1 = y2;
-            y2 = tmp;
+        int w = x2 - x1;
+        int h = y2 - y1;
+        int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+        if (w < 0) dx1 = -1;
+        else if (w > 0) dx1 = 1;
+        if (h < 0) dy1 = -1;
+        else if (h > 0) dy1 = 1;
+        if (w < 0) dx2 = -1;
+        else if (w > 0) dx2 = 1;
+        int longest = Math.abs(w);
+        int shortest = Math.abs(h);
+        if (!(longest > shortest)) {
+            longest = Math.abs(h);
+            shortest = Math.abs(w);
+            if (h < 0) dy2 = -1;
+            else if (h > 0) dy2 = 1;
+            dx2 = 0;
         }
-
-        if (x1 == x2) {
-            markHorizontalLine(x1, Math.min(y1, y2), Math.max(y1, y2), triangle, color);
-            return;
-        }
-
-        if (y1 == y2) {
-            markVerticalLine(x1, x2, y1, triangle, color);
-            return;
-        }
-
-        int sy = (y2 >= y1) ? 1 : -1; // direction for y
-
-        double deltaerror = Math.abs(dy / dx); // Assume deltax != 0 (line is not vertical),
-        // note that this division needs to be done in a way that preserves the fractional part
-        double error = 0; // no error at start
-
-        int y = y1;
-        for (int x = x1; x <= x2; x++) {
-            markPoint(x, y, triangle, color);
-            error += deltaerror;
-            if (error >= 0.5) {
-                y += sy;
-                error -= 1;
+        int numerator = longest >> 1;
+        for (int i = 0; i <= longest; i++) {
+            markPoint(x1, y1, triangle, color);
+            numerator += shortest;
+            if (!(numerator < longest)) {
+                numerator -= longest;
+                x1 += dx1;
+                y1 += dy1;
+            } else {
+                x1 += dx2;
+                y1 += dy2;
             }
-        }
-    }
-
-    private void markVerticalLine(int x1, int x2, int y, Triangle triangle, Color color) {
-        for (int x = x1; x <= x2; x++) {
-            markPoint(x, y, triangle, color);
-        }
-    }
-
-    private void markHorizontalLine(int x, int y1, int y2, Triangle triangle, Color color) {
-        for (int y = y1; y <= y2; y++) {
-            markPoint(x, y, triangle, color);
         }
     }
 
     private void markPoint(int x, int y, Triangle triangle, Color color) {
         double depth = triangle.depth(x, y);
         int zIndex = y * width + x;
-        if (zBuffer[zIndex] <= depth && x <= width && x >= 0 && y <= height && y >= 0) {
+        if (x <= width && x >= 0 && y <= height && y >= 0 && zBuffer[zIndex] <= depth) {
             colors[zIndex] = color;
             zBuffer[zIndex] = depth;
         }
