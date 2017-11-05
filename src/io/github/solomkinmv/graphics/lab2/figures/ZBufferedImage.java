@@ -18,16 +18,18 @@ public class ZBufferedImage {
     private final int height;
     private final boolean showNormal;
     private final boolean showGrid;
+    private final boolean depthColors;
     private final Transformer transformer;
     private double[] zBuffer;
     private Color[] colors;
 
-    public ZBufferedImage(Triangle[] triangles, int height, int width, int rotate, int roll, int pitch, boolean showNormal, boolean showGrid) {
+    public ZBufferedImage(Triangle[] triangles, int height, int width, int rotate, int roll, int pitch, boolean showNormal, boolean showGrid, boolean depthColors) {
         this.triangles = triangles;
         this.width = width;
         this.height = height;
         this.showNormal = showNormal;
         this.showGrid = showGrid;
+        this.depthColors = depthColors;
         transformer = new Transformer(rotate, roll, pitch);
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         initZBuffer();
@@ -60,7 +62,7 @@ public class ZBufferedImage {
         for (int y = triangle.minY(); y <= triangle.maxY(); y++) {
             for (int x = triangle.minX(); x <= triangle.maxX(); x++) {
                 if (triangle.containsPoint(x, y)) {
-                    markPoint(x, y, triangle, triangle.color);
+                    markPoint(x, y, triangle, triangle.shade());
                 }
                 if (showGrid) {
                     markLine(triangle.v1, triangle.v2, triangle, Color.black);
@@ -154,7 +156,18 @@ public class ZBufferedImage {
 
     private void generateImage() {
         Arrays.stream(triangles).forEach(this::processTriangle);
-        normalizeColorsAndDrawPoints();
+        if (depthColors) normalizeColorsAndDrawPoints();
+        else drawPointsWithNativeColor();
+    }
+
+    private void drawPointsWithNativeColor() {
+        for (int i = 0; i < colors.length; i++) {
+            if (colors[i] == null) {
+                continue;
+            }
+
+            image.setRGB(i % width, i / width, colors[i].getRGB());
+        }
     }
 
     public Image get() {
