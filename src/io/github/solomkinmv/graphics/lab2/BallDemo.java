@@ -6,6 +6,8 @@ import io.github.solomkinmv.graphics.lab2.types.Triangle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class BallDemo {
 
@@ -44,5 +46,10 @@ public class BallDemo {
 
         frame.setSize(800, 800);
         frame.setVisible(true);
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                frame.dispose();
+            }
+        });
     }
 }
