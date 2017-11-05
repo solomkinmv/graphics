@@ -1,28 +1,28 @@
 package io.github.solomkinmv.graphics.lab2.panels;
 
-import io.github.solomkinmv.graphics.lab2.figures.Drawing;
-import io.github.solomkinmv.graphics.lab2.figures.WireframeDrawing;
-import io.github.solomkinmv.graphics.lab2.generator.CylinderPoints;
-import io.github.solomkinmv.graphics.lab2.graphics.Graphics;
+import io.github.solomkinmv.graphics.lab2.figures.ZBufferedImage;
+import io.github.solomkinmv.graphics.lab2.generator.CylinderPolygonsGenerator;
+import io.github.solomkinmv.graphics.lab2.types.Triangle;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.util.function.Function;
 
 public class CylinderPanel implements GraphicPanels {
     private static final int SIZE = 1000;
-    private int fiAngle = 220;
-    private int thetaAngle = 60;
-    private GraphicCanvas canvas;
+    private FigurePanel figurePanel;
+    private int rotateAngle = 90;
+    private int rollAngle = 45;
+    private int pitchAngle;
     private JPanel panel;
     private int edges = 10;
     private int radius = 200;
     private int height = 300;
     private boolean showNormals;
+    private boolean showGrid;
+    private boolean depthColors = true;
 
     public CylinderPanel() {
-        canvas = new GraphicCanvas(newCylinderFunction(), SIZE, SIZE);
         init();
     }
 
@@ -32,33 +32,48 @@ public class CylinderPanel implements GraphicPanels {
 
     private void init() {
         panel = new JPanel();
-        panel.add(canvas);
+        figurePanel = new FigurePanel();
+        panel.add(figurePanel);
         panel.add(createControls());
     }
 
     private Component createControls() {
-        JPanel controlPanel = new JPanel(new GridLayout(6, 2));
+        JPanel controlPanel = new JPanel(new GridLayout(9, 2));
 
         setNavigationButtons(controlPanel);
         setEdgesSlider(controlPanel);
         setRadiusSpinner(controlPanel);
         setHeightSpinner(controlPanel);
-        setNormalsShowCheckBox(controlPanel);
+        setCheckBoxes(controlPanel);
 
         return controlPanel;
     }
 
-    private void setNormalsShowCheckBox(JPanel controlPanel) {
-        JCheckBox normalsCheckBox = new JCheckBox("Show normals");
+    private void setCheckBoxes(JPanel controlPanel) {
+        JCheckBox normalsCheckBox = new JCheckBox("Show normals", showNormals);
         normalsCheckBox.addItemListener(e -> {
             showNormals = e.getStateChange() == ItemEvent.SELECTED;
             repaint();
         });
         controlPanel.add(normalsCheckBox);
+
+        JCheckBox gridCheckBox = new JCheckBox("Show grid", showGrid);
+        gridCheckBox.addItemListener(e -> {
+            showGrid = e.getStateChange() == ItemEvent.SELECTED;
+            repaint();
+        });
+        controlPanel.add(gridCheckBox);
+
+        JCheckBox depthColorsCheckBox = new JCheckBox("Use depth colors", depthColors);
+        depthColorsCheckBox.addItemListener(e -> {
+            depthColors = e.getStateChange() == ItemEvent.SELECTED;
+            repaint();
+        });
+        controlPanel.add(depthColorsCheckBox);
     }
 
     private void setRadiusSpinner(JPanel controlPanel) {
-        SpinnerModel spinnerModel = new SpinnerNumberModel(200, //initial value
+        SpinnerModel spinnerModel = new SpinnerNumberModel(radius, //initial value
                                                            20, //min
                                                            300, //max
                                                            20);//step
@@ -72,7 +87,7 @@ public class CylinderPanel implements GraphicPanels {
     }
 
     private void setHeightSpinner(JPanel controlPanel) {
-        SpinnerModel spinnerModel = new SpinnerNumberModel(200, //initial value
+        SpinnerModel spinnerModel = new SpinnerNumberModel(height, //initial value
                                                            20, //min
                                                            300, //max
                                                            20);//step
@@ -86,7 +101,7 @@ public class CylinderPanel implements GraphicPanels {
     }
 
     private void setEdgesSlider(JPanel controlPanel) {
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, 2, 50, edges);
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, 3, 30, edges);
 
         slider.setValue(edges);
         slider.addChangeListener(e -> {
@@ -98,45 +113,72 @@ public class CylinderPanel implements GraphicPanels {
     }
 
     private void repaint() {
-        canvas.setDrawingFunction(newCylinderFunction());
-        canvas.repaint();
+        figurePanel.repaint();
     }
 
     private void setNavigationButtons(JPanel controlPanel) {
         JButton leftButton = new JButton("left");
         leftButton.addActionListener(e -> {
-            fiAngle += 10;
+            rotateAngle = (rotateAngle + 10) % 360;
             repaint();
         });
 
         JButton rightButton = new JButton("right");
         rightButton.addActionListener(e -> {
-            fiAngle -= 10;
+            rotateAngle = (rotateAngle - 10) % 360;
+            repaint();
+        });
+
+        JButton pitchLeftButton = new JButton("pitch left");
+        pitchLeftButton.addActionListener(e -> {
+            pitchAngle = (pitchAngle + 10) % 360;
+            repaint();
+        });
+
+        JButton pitchRightButton = new JButton("pitch right");
+        pitchRightButton.addActionListener(e -> {
+            pitchAngle = (pitchAngle - 10) % 360;
             repaint();
         });
 
         JButton upButton = new JButton("up");
         upButton.addActionListener(e -> {
-            thetaAngle -= 10;
+            rollAngle = (rollAngle + 10) % 360;
             repaint();
         });
 
         JButton downButton = new JButton("down");
         downButton.addActionListener(e -> {
-            thetaAngle += 10;
+            rollAngle = (rollAngle - 10) % 360;
             repaint();
         });
 
         controlPanel.add(leftButton);
         controlPanel.add(rightButton);
+        controlPanel.add(pitchLeftButton);
+        controlPanel.add(pitchRightButton);
         controlPanel.add(upButton);
         controlPanel.add(downButton);
     }
 
-    private Function<Graphics, Drawing> newCylinderFunction() {
-        return graphics -> new WireframeDrawing(graphics,
-                                                new CylinderPoints(radius, height, edges, edges), fiAngle,
-                                                thetaAngle, showNormals, true);
-    }
+    class FigurePanel extends JPanel {
 
+        private FigurePanel() {
+            setPreferredSize(new Dimension(SIZE, SIZE));
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(Color.white);
+            g2.fillRect(0, 0, SIZE, SIZE);
+
+            Triangle[] tris = new CylinderPolygonsGenerator(radius, height, edges, edges).generate();
+
+            Image image = new ZBufferedImage(tris, SIZE, SIZE, rollAngle, rotateAngle,
+                                             pitchAngle, showNormals, showGrid, depthColors).get();
+
+            g2.drawImage(image, 0, 0, null);
+        }
+    }
 }

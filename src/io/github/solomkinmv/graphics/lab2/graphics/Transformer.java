@@ -35,9 +35,9 @@ public class Transformer {
 
     private Matrix headingMatrix() {
         return new Matrix(new double[][]{
-                {Math.cos(roll), 0, Math.sin(roll)},
-                {0, 1, 0},
-                {-Math.sin(roll), 0, Math.cos(roll)}
+                {Math.cos(roll), -Math.sin(roll), 0},
+                {Math.sin(roll), Math.cos(roll), 0},
+                {0, 0, 1}
         });
     }
 

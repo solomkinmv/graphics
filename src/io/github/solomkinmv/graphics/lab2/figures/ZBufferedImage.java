@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 public class ZBufferedImage {
 
+    private static final int AXIS_LENGTH = 500;
     private static final int NORMAL_LENGTH = 10;
     private final BufferedImage image;
     private final Triangle[] triangles;
@@ -118,7 +119,7 @@ public class ZBufferedImage {
     private void markPoint(int x, int y, Triangle triangle, Color color) {
         double depth = triangle.depth(x, y);
         int zIndex = y * width + x;
-        if (x <= width && x >= 0 && y <= height && y >= 0 && zBuffer[zIndex] <= depth) {
+        if (zIndex >= 0 && zIndex < zBuffer.length && zBuffer[zIndex] <= depth) {
             colors[zIndex] = color;
             zBuffer[zIndex] = depth;
         }
@@ -156,6 +157,7 @@ public class ZBufferedImage {
 
     private void generateImage() {
         Arrays.stream(triangles).forEach(this::processTriangle);
+        markAxis();
         if (depthColors) normalizeColorsAndDrawPoints();
         else drawPointsWithNativeColor();
     }
@@ -168,6 +170,25 @@ public class ZBufferedImage {
 
             image.setRGB(i % width, i / width, colors[i].getRGB());
         }
+    }
+
+    private void markAxis() {
+        int yCenter = height / 2;
+        int xCenter = width / 2;
+        Point3D o = new Point3D(0, 0, 0);
+        Point3D ox = new Point3D(AXIS_LENGTH, 0, 0);
+        Point3D oy = new Point3D(0, AXIS_LENGTH, 0);
+        Point3D oz = new Point3D(0, 0, AXIS_LENGTH);
+        Triangle triangle = new Triangle(ox, oy, oz, Color.black);
+
+        o = transformer.transform(o).add(xCenter, yCenter, 0);
+        ox = transformer.transform(ox).add(xCenter, yCenter, 0);
+        oy = transformer.transform(oy).add(xCenter, yCenter, 0);
+        oz = transformer.transform(oz).add(xCenter, yCenter, 0);
+
+        markLine(o, ox, triangle, Color.black);
+        markLine(o, oy, triangle, Color.black);
+        markLine(o, oz, triangle, Color.black);
     }
 
     public Image get() {
