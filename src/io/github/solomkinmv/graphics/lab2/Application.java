@@ -1,8 +1,6 @@
 package io.github.solomkinmv.graphics.lab2;
 
-import io.github.solomkinmv.graphics.lab2.panels.BezierPanel;
-import io.github.solomkinmv.graphics.lab2.panels.CylinderPanel;
-import io.github.solomkinmv.graphics.lab2.panels.GraphicPanels;
+import io.github.solomkinmv.graphics.lab2.panels.*;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -10,8 +8,8 @@ import java.awt.event.WindowEvent;
 
 public class Application {
     public static void main(String[] args) {
-        bezier();
-        cylinder();
+        ruBezier();
+        portion();
     }
 
     private static void cylinder() {
@@ -20,6 +18,13 @@ public class Application {
 
     private static void bezier() {
         createFrame(new BezierPanel());
+    }
+
+    private static void portion() {
+        createFrame(new PortionPanel());
+    }
+    private static void ruBezier() {
+        createFrame(new RuBezierPanel());
     }
 
     private static void createFrame(GraphicPanels graphicPanels) {
