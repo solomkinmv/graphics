@@ -11,10 +11,10 @@ public class TrianglesCreator {
 
         for (int i = 0; i < points.length; i++) {
             for (int j = 0; j < points[i].length; j++) {
-                int jMax = points[i].length;
+                int jMax = points[i].length - 1;
                 int iMax = points.length - 1;
 
-                boolean hasSidePoint = continuous || j < jMax;
+                boolean hasSidePoint = continuous || j + 1 < jMax;
                 boolean hasTopPoint = i < iMax;
                 if (hasTopPoint && hasSidePoint) {
                     triangles.add(new Triangle(points[i][j], points[i + 1][j], points[i + 1][(j + 1) % jMax]));
