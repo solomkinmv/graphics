@@ -21,6 +21,7 @@ public class ZBufferedImage {
     private final boolean showGrid;
     private final boolean depthColors;
     private final Transformer transformer;
+    private final Vector3D cameraVector;
     private double[] zBuffer;
     private Color[] colors;
 
@@ -32,6 +33,7 @@ public class ZBufferedImage {
         this.showGrid = showGrid;
         this.depthColors = depthColors;
         transformer = new Transformer(rotate, roll, pitch);
+        cameraVector = new Vector3D(new Point3D(0, 0, 0), transformer.transform(new Point3D(1000, 1000, 1000))); // todo: specify camera point from panel
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         initZBuffer();
 
@@ -57,13 +59,16 @@ public class ZBufferedImage {
     }
 
     private void processTriangle(Triangle triangle) {
+
+        Color color = calculateColor(triangle);
+
         triangle = transformer.transform(triangle);
         triangle = triangle.add(width / 2., height / 2., 0);
 
         for (int y = triangle.minY(); y <= triangle.maxY(); y++) {
             for (int x = triangle.minX(); x <= triangle.maxX(); x++) {
                 if (triangle.containsPoint(x, y)) {
-                    markPoint(x, y, triangle, triangle.shade());
+                    markPoint(x, y, triangle, color);
                 }
             }
         }
@@ -124,6 +129,14 @@ public class ZBufferedImage {
             colors[zIndex] = color;
             zBuffer[zIndex] = depth;
         }
+    }
+
+    private Color calculateColor(Triangle triangle) {
+        double dotProductOfCameraAndPointNormal = cameraVector.dotProduct(triangle.normal());
+
+        int colorValue = (int) Math.min(240, Math.max(0, dotProductOfCameraAndPointNormal) / 10);
+
+        return new Color(colorValue, colorValue, colorValue);
     }
 
     private void normalizeColorsAndDrawPoints() {
@@ -195,6 +208,11 @@ public class ZBufferedImage {
         markLine(o, ox, triangle, Color.black);
         markLine(o, oy, triangle, Color.black);
         markLine(o, oz, triangle, Color.black);
+
+        Point3D cameraPoint = new Point3D(cameraVector.x, cameraVector.y, cameraVector.z);
+        cameraPoint = transformer.transform(cameraPoint).add(xCenter, yCenter, 0);
+
+        markLine(o, cameraPoint, triangle, Color.green);
     }
 
     public Image get() {

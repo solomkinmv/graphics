@@ -8,8 +8,8 @@ import java.awt.event.WindowEvent;
 
 public class Application {
     public static void main(String[] args) {
-        ruBezier();
-        portion();
+        cylinder();
+        bezier();
     }
 
     private static void cylinder() {

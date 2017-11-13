@@ -17,8 +17,13 @@ public class TrianglesCreator {
                 boolean hasSidePoint = continuous || j + 1 < jMax;
                 boolean hasTopPoint = i < iMax;
                 if (hasTopPoint && hasSidePoint) {
-                    triangles.add(new Triangle(points[i][j], points[i + 1][j], points[i + 1][(j + 1) % jMax]));
-                    triangles.add(new Triangle(points[i][j], points[i][(j + 1) % jMax], points[i + 1][(j + 1) % jMax]));
+                    Point3D v1 = points[i][j];
+                    Point3D v2 = points[i + 1][(j + 1) % jMax];
+                    Point3D v3 = points[i + 1][j];
+                    Point3D v4 = points[i][(j + 1) % jMax];
+
+                    triangles.add(new Triangle(v3, v1, v2));
+                    triangles.add(new Triangle(v1, v4, v2));
                 }
             }
         }
