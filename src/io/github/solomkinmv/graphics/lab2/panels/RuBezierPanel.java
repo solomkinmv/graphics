@@ -3,6 +3,7 @@ package io.github.solomkinmv.graphics.lab2.panels;
 import io.github.solomkinmv.graphics.lab2.figures.ZBufferedImage;
 import io.github.solomkinmv.graphics.lab2.generator.BezierPolygonsGenerator;
 import io.github.solomkinmv.graphics.lab2.types.Point2D;
+import io.github.solomkinmv.graphics.lab2.types.Point3D;
 import io.github.solomkinmv.graphics.lab2.types.Triangle;
 
 import javax.swing.*;
@@ -183,7 +184,7 @@ public class RuBezierPanel implements GraphicPanels {
 
             Triangle[] tris = new BezierPolygonsGenerator(height, height, edges, edges, sourcePoints).generate();
 
-            Image image = new ZBufferedImage(tris, SIZE, SIZE, rollAngle, rotateAngle,
+            Image image = new ZBufferedImage(tris, new Point3D(1000, 1000, 1000), SIZE, SIZE, rollAngle, rotateAngle,
                                              pitchAngle, showNormals, showGrid, false).get();
 
             g2.drawImage(image, 0, 0, null);

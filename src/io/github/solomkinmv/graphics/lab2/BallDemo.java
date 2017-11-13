@@ -2,6 +2,7 @@ package io.github.solomkinmv.graphics.lab2;
 
 import io.github.solomkinmv.graphics.lab2.figures.ZBufferedImage;
 import io.github.solomkinmv.graphics.lab2.generator.BallPolygonsGenerator;
+import io.github.solomkinmv.graphics.lab2.types.Point3D;
 import io.github.solomkinmv.graphics.lab2.types.Triangle;
 
 import javax.swing.*;
@@ -33,7 +34,7 @@ public class BallDemo {
 
                 Triangle[] tris = new BallPolygonsGenerator(100).generate();
 
-                Image image = new ZBufferedImage(tris, getHeight(), getWidth(), rotateSlider.getValue(), 0,
+                Image image = new ZBufferedImage(tris, new Point3D(1000, 1000, 1000), getHeight(), getWidth(), rotateSlider.getValue(), 0,
                                                  pitchSlider.getValue(), false, false, false).get();
 
                 g2.drawImage(image, 0, 0, null);
