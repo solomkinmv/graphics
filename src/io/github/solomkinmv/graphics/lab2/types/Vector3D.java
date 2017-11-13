@@ -23,6 +23,10 @@ public class Vector3D {
                             x * otherVector3D.y - y * otherVector3D.x);
     }
 
+    public double dotProduct(Vector3D otherVector3D) {
+        return x * otherVector3D.x + y * otherVector3D.y + z * otherVector3D.z;
+    }
+
     public Vector3D normal(Vector3D otherVector3D) {
         Vector3D productVector3D = crossProduct(otherVector3D);
         return productVector3D.divide(productVector3D.length());
