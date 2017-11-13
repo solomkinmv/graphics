@@ -123,6 +123,8 @@ public class ZBufferedImage {
     }
 
     private void markPoint(int x, int y, Triangle triangle, Color color) {
+        if (x > width || x < 0 || y > height || y < 0) return;
+
         double depth = triangle.depth(x, y);
         int zIndex = y * width + x;
         if (zIndex >= 0 && zIndex < zBuffer.length && zBuffer[zIndex] <= depth) {
