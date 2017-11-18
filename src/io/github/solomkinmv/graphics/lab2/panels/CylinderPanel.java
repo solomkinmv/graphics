@@ -2,7 +2,6 @@ package io.github.solomkinmv.graphics.lab2.panels;
 
 import io.github.solomkinmv.graphics.lab2.figures.ZBufferedImage;
 import io.github.solomkinmv.graphics.lab2.generator.CylinderPolygonsGenerator;
-import io.github.solomkinmv.graphics.lab2.types.Point3D;
 import io.github.solomkinmv.graphics.lab2.types.Triangle;
 
 import javax.swing.*;
@@ -22,11 +21,8 @@ public class CylinderPanel implements GraphicPanels {
     private boolean showNormals;
     private boolean showGrid;
     private boolean depthColors = true;
-    private String cameraPointStr = "1000,1000,1000";
-    private Point3D cameraPoint;
 
     public CylinderPanel() {
-        parseCameraPoint();
         init();
     }
 
@@ -42,13 +38,12 @@ public class CylinderPanel implements GraphicPanels {
     }
 
     private Component createControls() {
-        JPanel controlPanel = new JPanel(new GridLayout(10, 2));
+        JPanel controlPanel = new JPanel(new GridLayout(9, 2));
 
         setNavigationButtons(controlPanel);
         setEdgesSlider(controlPanel);
         setRadiusSpinner(controlPanel);
         setHeightSpinner(controlPanel);
-        setCameraPointEditor(controlPanel);
         setCheckBoxes(controlPanel);
 
         return controlPanel;
@@ -75,25 +70,6 @@ public class CylinderPanel implements GraphicPanels {
             repaint();
         });
         controlPanel.add(depthColorsCheckBox);
-    }
-
-    private void setCameraPointEditor(JPanel controlPanel) {
-        JTextField cameraPointText = new JTextField(cameraPointStr);
-        cameraPointText.addActionListener(e -> {
-            cameraPointStr = cameraPointText.getText();
-            parseCameraPoint();
-            repaint();
-        });
-
-        controlPanel.add(new Label("Camera point: "));
-        controlPanel.add(cameraPointText);
-    }
-
-    private void parseCameraPoint() {
-        String[] cameraPointChunks = cameraPointStr.split(",");
-        cameraPoint = new Point3D(Double.parseDouble(cameraPointChunks[0]),
-                                  Double.parseDouble(cameraPointChunks[1]),
-                                  Double.parseDouble(cameraPointChunks[2]));
     }
 
     private void setRadiusSpinner(JPanel controlPanel) {
@@ -199,7 +175,7 @@ public class CylinderPanel implements GraphicPanels {
 
             Triangle[] tris = new CylinderPolygonsGenerator(radius, height, edges, edges).generate();
 
-            Image image = new ZBufferedImage(tris, cameraPoint, SIZE, SIZE, rollAngle, rotateAngle,
+            Image image = new ZBufferedImage(tris, SIZE, SIZE, rollAngle, rotateAngle,
                                              pitchAngle, showNormals, showGrid, depthColors).get();
 
             g2.drawImage(image, 0, 0, null);

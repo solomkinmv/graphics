@@ -172,7 +172,7 @@ public class PortionPanel implements GraphicPanels {
 
             Triangle[] tris = new PortionPolygonsGenerator(line1, line2, edges, edges).generate();
 
-            Image image = new ZBufferedImage(tris, new Point3D(1000, 1000, 1000), SIZE, SIZE, rollAngle, rotateAngle,
+            Image image = new ZBufferedImage(tris, SIZE, SIZE, rollAngle, rotateAngle,
                                              pitchAngle, showNormals, showGrid, false).get();
 
             g2.drawImage(image, 0, 0, null);

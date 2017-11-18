@@ -25,7 +25,7 @@ public class ZBufferedImage {
     private double[] zBuffer;
     private Color[] colors;
 
-    public ZBufferedImage(Triangle[] triangles, Point3D camePoint, int height, int width, int rotate, int roll, int pitch, boolean showNormal, boolean showGrid, boolean depthColors) {
+    public ZBufferedImage(Triangle[] triangles, int height, int width, int rotate, int roll, int pitch, boolean showNormal, boolean showGrid, boolean depthColors) {
         this.triangles = triangles;
         this.width = width;
         this.height = height;
@@ -33,7 +33,7 @@ public class ZBufferedImage {
         this.showGrid = showGrid;
         this.depthColors = depthColors;
         transformer = new Transformer(rotate, roll, pitch);
-        cameraVector = new Vector3D(new Point3D(0, 0, 0), camePoint);
+        cameraVector = new Vector3D(new Point3D(0, 0, 0), transformer.transform(new Point3D(1000, 1000, 1000))); // todo: specify camera point from panel
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         initZBuffer();
 
