@@ -11,10 +11,7 @@ public class Triangle {
     public final Color color;
 
     public Triangle(Point3D v1, Point3D v2, Point3D v3) {
-        this.v1 = v1;
-        this.v2 = v2;
-        this.v3 = v3;
-        color = Color.white;
+        this(v1, v2, v3, Color.white);
     }
 
     public Triangle(Point3D v1, Point3D v2, Point3D v3, Color color) {

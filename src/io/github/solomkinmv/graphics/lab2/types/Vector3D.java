@@ -17,6 +17,10 @@ public class Vector3D {
         this.z = z;
     }
 
+    public Vector3D add(Vector3D otherVector3D) {
+        return new Vector3D(x + otherVector3D.x, y + otherVector3D.y, z + otherVector3D.z);
+    }
+
     public Vector3D crossProduct(Vector3D otherVector3D) {
         return new Vector3D(y * otherVector3D.z - z * otherVector3D.y,
                             z * otherVector3D.x - x * otherVector3D.z,
@@ -28,8 +32,7 @@ public class Vector3D {
     }
 
     public Vector3D normal(Vector3D otherVector3D) {
-        Vector3D productVector3D = crossProduct(otherVector3D);
-        return productVector3D.divide(productVector3D.length());
+        return crossProduct(otherVector3D).normalize();
     }
 
     public Vector3D divide(double val) {
@@ -38,5 +41,9 @@ public class Vector3D {
 
     public double length() {
         return Math.sqrt(x * x + y * y + z * z);
+    }
+
+    public Vector3D normalize() {
+        return divide(length());
     }
 }
