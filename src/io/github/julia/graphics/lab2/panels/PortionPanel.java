@@ -1,9 +1,9 @@
-package io.github.solomkinmv.graphics.lab2.panels;
+package io.github.julia.graphics.lab2.panels;
 
-import io.github.solomkinmv.graphics.lab2.figures.ZBufferedImage;
-import io.github.solomkinmv.graphics.lab2.generator.PortionPolygonsGenerator;
-import io.github.solomkinmv.graphics.lab2.types.Point3D;
-import io.github.solomkinmv.graphics.lab2.types.Triangle;
+import io.github.julia.graphics.lab2.figures.ZBufferedImage;
+import io.github.julia.graphics.lab2.generator.PortionPolygonsGenerator;
+import io.github.julia.graphics.lab2.types.Point3D;
+import io.github.julia.graphics.lab2.types.Triangle;
 
 import javax.swing.*;
 import java.awt.*;

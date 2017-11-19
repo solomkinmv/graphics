@@ -1,6 +1,6 @@
-package io.github.solomkinmv.graphics.lab2;
+package io.github.julia.graphics.lab2;
 
-import io.github.solomkinmv.graphics.lab2.panels.*;
+import io.github.julia.graphics.lab2.panels.*;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;

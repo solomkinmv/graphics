@@ -1,8 +1,8 @@
-package io.github.solomkinmv.graphics.lab2.generator;
+package io.github.julia.graphics.lab2.generator;
 
-import io.github.solomkinmv.graphics.lab2.figures.TrianglesCreator;
-import io.github.solomkinmv.graphics.lab2.types.Point3D;
-import io.github.solomkinmv.graphics.lab2.types.Triangle;
+import io.github.julia.graphics.lab2.figures.TrianglesCreator;
+import io.github.julia.graphics.lab2.types.Point3D;
+import io.github.julia.graphics.lab2.types.Triangle;
 
 public class PortionPolygonsGenerator implements PolygonsGenerator {
 

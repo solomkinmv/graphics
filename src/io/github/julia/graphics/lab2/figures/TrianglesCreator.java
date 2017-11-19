@@ -1,7 +1,7 @@
-package io.github.solomkinmv.graphics.lab2.figures;
+package io.github.julia.graphics.lab2.figures;
 
-import io.github.solomkinmv.graphics.lab2.types.Point3D;
-import io.github.solomkinmv.graphics.lab2.types.Triangle;
+import io.github.julia.graphics.lab2.types.Point3D;
+import io.github.julia.graphics.lab2.types.Triangle;
 
 import java.util.ArrayList;
 

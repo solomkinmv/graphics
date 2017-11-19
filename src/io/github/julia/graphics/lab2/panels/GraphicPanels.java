@@ -1,4 +1,4 @@
-package io.github.solomkinmv.graphics.lab2.panels;
+package io.github.julia.graphics.lab2.panels;
 
 import javax.swing.*;
 

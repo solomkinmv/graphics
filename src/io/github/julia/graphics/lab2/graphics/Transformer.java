@@ -1,8 +1,8 @@
-package io.github.solomkinmv.graphics.lab2.graphics;
+package io.github.julia.graphics.lab2.graphics;
 
-import io.github.solomkinmv.graphics.lab2.types.Matrix;
-import io.github.solomkinmv.graphics.lab2.types.Point3D;
-import io.github.solomkinmv.graphics.lab2.types.Triangle;
+import io.github.julia.graphics.lab2.types.Matrix;
+import io.github.julia.graphics.lab2.types.Point3D;
+import io.github.julia.graphics.lab2.types.Triangle;
 
 public class Transformer {
     private final double rotate;

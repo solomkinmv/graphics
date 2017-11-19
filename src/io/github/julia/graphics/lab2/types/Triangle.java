@@ -1,4 +1,4 @@
-package io.github.solomkinmv.graphics.lab2.types;
+package io.github.julia.graphics.lab2.types;
 
 import java.awt.*;
 import java.util.function.BiFunction;

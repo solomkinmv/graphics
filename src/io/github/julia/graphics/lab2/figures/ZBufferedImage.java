@@ -1,9 +1,9 @@
-package io.github.solomkinmv.graphics.lab2.figures;
+package io.github.julia.graphics.lab2.figures;
 
-import io.github.solomkinmv.graphics.lab2.graphics.Transformer;
-import io.github.solomkinmv.graphics.lab2.types.Point3D;
-import io.github.solomkinmv.graphics.lab2.types.Triangle;
-import io.github.solomkinmv.graphics.lab2.types.Vector3D;
+import io.github.julia.graphics.lab2.graphics.Transformer;
+import io.github.julia.graphics.lab2.types.Point3D;
+import io.github.julia.graphics.lab2.types.Triangle;
+import io.github.julia.graphics.lab2.types.Vector3D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
