@@ -23,7 +23,7 @@ public class PortionPanel implements GraphicPanels {
     private Point3D[] line1 = parseBezierPoints(line1Str);
     private Point3D[] line2 = parseBezierPoints(line2Str);
     private boolean showNormals;
-    private boolean showGrid = true;
+    private boolean showGrid = false;
     private FigurePanel figurePanel;
 
     public PortionPanel() {
@@ -173,7 +173,7 @@ public class PortionPanel implements GraphicPanels {
             Triangle[] tris = new PortionPolygonsGenerator(line1, line2, edges, edges).generate();
 
             Image image = new ZBufferedImage(tris, SIZE, SIZE, rollAngle, rotateAngle,
-                                             pitchAngle, showNormals, showGrid, false).get();
+                                             pitchAngle, showNormals, showGrid, true).get();
 
             g2.drawImage(image, 0, 0, null);
         }

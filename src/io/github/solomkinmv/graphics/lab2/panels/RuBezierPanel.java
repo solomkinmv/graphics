@@ -184,7 +184,7 @@ public class RuBezierPanel implements GraphicPanels {
             Triangle[] tris = new BezierPolygonsGenerator(height, height, edges, edges, sourcePoints).generate();
 
             Image image = new ZBufferedImage(tris, SIZE, SIZE, rollAngle, rotateAngle,
-                                             pitchAngle, showNormals, showGrid, false).get();
+                                             pitchAngle, showNormals, showGrid, true).get();
 
             g2.drawImage(image, 0, 0, null);
         }
