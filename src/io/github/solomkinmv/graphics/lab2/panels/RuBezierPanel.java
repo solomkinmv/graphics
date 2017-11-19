@@ -24,7 +24,7 @@ public class RuBezierPanel implements GraphicPanels {
     private int edges = 10;
     private int height = 30;
     private boolean showNormals;
-    private String bezierPoints = "1,1;5,7;8,2;10,10;15,12";
+    private String bezierPoints = "1,1;5,10;8,4";
     private List<Point2D> sourcePoints;
     private boolean showGrid;
 

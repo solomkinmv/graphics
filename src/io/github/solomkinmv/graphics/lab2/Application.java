@@ -12,14 +12,6 @@ public class Application {
         portion();
     }
 
-    private static void cylinder() {
-        createFrame(new CylinderPanel());
-    }
-
-    private static void bezier() {
-        createFrame(new BezierPanel());
-    }
-
     private static void portion() {
         createFrame(new PortionPanel());
     }
