@@ -46,4 +46,9 @@ public class Vector3D {
     public Vector3D normalize() {
         return divide(length());
     }
+
+    public double angle(Vector3D vector) {
+        double v = x * vector.x + y * vector.y + z * vector.z;
+        return Math.toDegrees(Math.acos(v / length() / vector.length()));
+    }
 }

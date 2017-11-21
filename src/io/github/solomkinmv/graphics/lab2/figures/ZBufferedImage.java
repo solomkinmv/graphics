@@ -9,10 +9,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
+@SuppressWarnings("ALL")
 public class ZBufferedImage {
 
     private static final int AXIS_LENGTH = 500;
     private static final int NORMAL_LENGTH = 10;
+    private static final double KD = 1.4;
+    private static final double LIGHT_INTENSIVITY = 100;
     private final BufferedImage image;
     private final Triangle[] triangles;
     private final int width;
@@ -21,6 +24,7 @@ public class ZBufferedImage {
     private final boolean showGrid;
     private final boolean depthColors;
     private final Transformer transformer;
+    private final Vector3D viewVector;
     private double[] zBuffer;
     private Color[] colors;
 
@@ -33,6 +37,7 @@ public class ZBufferedImage {
         this.depthColors = depthColors;
         transformer = new Transformer(rotate, roll, pitch);
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        viewVector = new Vector3D(1000, 1000, 1000);
         initZBuffer();
 
         generateImage();
@@ -63,7 +68,7 @@ public class ZBufferedImage {
         for (int y = triangle.minY(); y <= triangle.maxY(); y++) {
             for (int x = triangle.minX(); x <= triangle.maxX(); x++) {
                 if (triangle.containsPoint(x, y)) {
-                    markPoint(x, y, triangle, triangle.shade());
+                    markPoint(x, y, triangle, calculateColor(triangle.normal()));
                 }
             }
         }
@@ -76,6 +81,19 @@ public class ZBufferedImage {
         if (showNormal) {
             drawNormal(triangle);
         }
+    }
+
+    private Color calculateColor(Vector3D normal) {
+        double cos = calculateVector(normal);
+        int intensive = (int) (LIGHT_INTENSIVITY * KD * cos);
+        Color c = new Color(intensive, intensive, intensive);
+        return c;
+    }
+
+    private double calculateVector(Vector3D normal) {
+        return Math.abs(normal.x * viewVector.x + normal.y * viewVector.y + normal.z * viewVector.z) / (Math.sqrt(
+                normal.x * normal.x + normal.y * normal.y + normal.z * normal.z) * Math.sqrt(
+                viewVector.x * viewVector.x + viewVector.y * viewVector.y + viewVector.z * viewVector.z));
     }
 
     private void markLine(Point3D p1, Point3D p2, Triangle triangle, Color color) {
