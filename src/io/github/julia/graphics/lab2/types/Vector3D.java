@@ -39,11 +39,20 @@ public class Vector3D {
         return new Vector3D(x / val, y / val, z / val);
     }
 
+    public Vector3D mul(double val) {
+        return new Vector3D(x * val, y * val, z * val);
+    }
+
     public double length() {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
     public Vector3D normalize() {
         return divide(length());
+    }
+
+    public double angle(Vector3D vector) {
+        double v = x * vector.x + y * vector.y + z * vector.z;
+        return Math.toDegrees(Math.acos(v / length() / vector.length()));
     }
 }

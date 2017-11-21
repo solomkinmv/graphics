@@ -21,7 +21,7 @@ public class RuBezierPanel implements GraphicPanels {
     private int rotateAngle = 90;
     private int rollAngle = 45;
     private int pitchAngle;
-    private int edges = 10;
+    private int edges = 300;
     private int height = 30;
     private boolean showNormals;
     private String bezierPoints = "1,1;5,10;8,4";
@@ -109,7 +109,7 @@ public class RuBezierPanel implements GraphicPanels {
     }
 
     private void setEdgesSlider(JPanel controlPanel) {
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, 2, 50, edges);
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, 2, 500, edges);
 
         slider.setValue(edges);
         slider.addChangeListener(e -> {
@@ -184,7 +184,7 @@ public class RuBezierPanel implements GraphicPanels {
             Triangle[] tris = new BezierPolygonsGenerator(height, height, edges, edges, sourcePoints).generate();
 
             Image image = new ZBufferedImage(tris, SIZE, SIZE, rollAngle, rotateAngle,
-                                             pitchAngle, showNormals, showGrid, true).get();
+                                             pitchAngle, showNormals, showGrid, false).get();
 
             g2.drawImage(image, 0, 0, null);
         }

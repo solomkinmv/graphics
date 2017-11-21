@@ -24,4 +24,9 @@ public class Point2D {
                 ", y=" + y +
                 '}';
     }
+
+
+    public double dist(Point3D otherPoint) {
+        return Math.sqrt(Math.pow(x - otherPoint.x, 2) + Math.pow(y - otherPoint.y, 2));
+    }
 }

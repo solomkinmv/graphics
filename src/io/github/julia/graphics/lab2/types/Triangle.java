@@ -9,6 +9,8 @@ public class Triangle {
     public final Point3D v2;
     public final Point3D v3;
     public final Color color;
+    private static final double INTENSIVE_LIGHT = 180;
+    private static final double KD = 1.4;
 
     public Triangle(Point3D v1, Point3D v2, Point3D v3) {
         this(v1, v2, v3, Color.white);
@@ -79,6 +81,18 @@ public class Triangle {
         return minMax.apply(toAxisValue.apply(v1), minMax.apply(toAxisValue.apply(v2), toAxisValue.apply(v3)));
     }
 
+    public Vector3D n1() {
+        return normal();
+    }
+
+    public Vector3D n2() {
+        return normal();
+    }
+
+    public Vector3D n3() {
+        return normal();
+    }
+
     public boolean containsPoint(Point3D point) {
         return containsPoint(point.x, point.y);
     }
@@ -106,18 +120,14 @@ public class Triangle {
     public Color shade() {
         Vector3D norm = normal();
 
-        double angleCos = Math.abs(norm.z);
+        double angleCos = calculateCos(norm);
+        int intensive = (int) (INTENSIVE_LIGHT * KD * angleCos);
 
+        return new Color(intensive, intensive, intensive);
+    }
 
-        double redLinear = Math.pow(color.getRed(), 2.4) * angleCos;
-        double greenLinear = Math.pow(color.getGreen(), 2.4) * angleCos;
-        double blueLinear = Math.pow(color.getBlue(), 2.4) * angleCos;
-
-        int red = (int) Math.pow(redLinear, 1 / 2.4);
-        int green = (int) Math.pow(greenLinear, 1 / 2.4);
-        int blue = (int) Math.pow(blueLinear, 1 / 2.4);
-
-        return new Color(red, green, blue);
+    private double calculateCos(Vector3D norm) {
+        return Math.abs(norm.z);
     }
 
     @Override

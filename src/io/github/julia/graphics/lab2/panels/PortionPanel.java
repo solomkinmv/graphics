@@ -17,7 +17,7 @@ public class PortionPanel implements GraphicPanels {
     private int rollAngle = 45;
     private int pitchAngle;
     private JPanel panel;
-    private int edges = 10;
+    private int edges = 300;
     private String line1Str = "0,0,0;0,0.5,1;0,1,0";
     private String line2Str = "1,0,0;1,0.5,0;1,1,0";
     private Point3D[] line1 = parseBezierPoints(line1Str);
@@ -98,7 +98,7 @@ public class PortionPanel implements GraphicPanels {
     }
 
     private void setEdgesSlider(JPanel controlPanel) {
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, 2, 50, edges);
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, 2, 500, edges);
 
         slider.setValue(edges);
         slider.addChangeListener(e -> {
@@ -173,7 +173,7 @@ public class PortionPanel implements GraphicPanels {
             Triangle[] tris = new PortionPolygonsGenerator(line1, line2, edges, edges).generate();
 
             Image image = new ZBufferedImage(tris, SIZE, SIZE, rollAngle, rotateAngle,
-                                             pitchAngle, showNormals, showGrid, true).get();
+                                             pitchAngle, showNormals, showGrid, false).get();
 
             g2.drawImage(image, 0, 0, null);
         }
