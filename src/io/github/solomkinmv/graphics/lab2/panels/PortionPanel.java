@@ -17,7 +17,7 @@ public class PortionPanel implements GraphicPanels {
     private int rollAngle = 45;
     private int pitchAngle;
     private JPanel panel;
-    private int edges = 10;
+    private int edges = 300;
     private String line1Str = "0,0,0;0,0.5,1;0,1,0";
     private String line2Str = "1,0,0;1,0.5,0;1,1,0";
     private Point3D[] line1 = parseBezierPoints(line1Str);

@@ -21,7 +21,7 @@ public class RuBezierPanel implements GraphicPanels {
     private int rotateAngle = 90;
     private int rollAngle = 45;
     private int pitchAngle;
-    private int edges = 10;
+    private int edges = 300;
     private int height = 30;
     private boolean showNormals;
     private String bezierPoints = "1,1;5,7;8,2;10,10;15,12";

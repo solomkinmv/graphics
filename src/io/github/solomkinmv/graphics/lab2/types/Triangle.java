@@ -81,6 +81,18 @@ public class Triangle {
         return minMax.apply(toAxisValue.apply(v1), minMax.apply(toAxisValue.apply(v2), toAxisValue.apply(v3)));
     }
 
+    public Vector3D n1() {
+        return normal();
+    }
+
+    public Vector3D n2() {
+        return normal();
+    }
+
+    public Vector3D n3() {
+        return normal();
+    }
+
     public boolean containsPoint(Point3D point) {
         return containsPoint(point.x, point.y);
     }

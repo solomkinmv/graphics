@@ -39,6 +39,10 @@ public class Vector3D {
         return new Vector3D(x / val, y / val, z / val);
     }
 
+    public Vector3D mul(double val) {
+        return new Vector3D(x * val, y * val, z * val);
+    }
+
     public double length() {
         return Math.sqrt(x * x + y * y + z * z);
     }

@@ -1,9 +1,7 @@
 package io.github.solomkinmv.graphics.lab2.figures;
 
 import io.github.solomkinmv.graphics.lab2.graphics.Transformer;
-import io.github.solomkinmv.graphics.lab2.types.Point3D;
-import io.github.solomkinmv.graphics.lab2.types.Triangle;
-import io.github.solomkinmv.graphics.lab2.types.Vector3D;
+import io.github.solomkinmv.graphics.lab2.types.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -68,7 +66,13 @@ public class ZBufferedImage {
         for (int y = triangle.minY(); y <= triangle.maxY(); y++) {
             for (int x = triangle.minX(); x <= triangle.maxX(); x++) {
                 if (triangle.containsPoint(x, y)) {
-                    markPoint(x, y, triangle, calculateColor(triangle.normal()));
+
+                    Point2D p = new Point2D(x, y);
+                    double u = calculateU(p, triangle);;
+                    double w = calculateW(p, triangle);
+                    double t = calculateT(p, triangle);
+                    Color color = calculateColor(calculateNt(calculateNa(triangle, u), calculateNb(triangle, w), t));
+                    markPoint(x, y, triangle, color);
                 }
             }
         }
@@ -83,14 +87,37 @@ public class ZBufferedImage {
         }
     }
 
-    private Color calculateColor(Vector3D normal) {
-        double cos = calculateVector(normal);
-        int intensive = (int) (LIGHT_INTENSIVITY * KD * cos);
-        Color c = new Color(intensive, intensive, intensive);
-        return c;
+    private double calculateT(Point2D p, Triangle triangle) {
+        return p.dist(triangle.v3) / p.dist(triangle.v1);
     }
 
-    private double calculateVector(Vector3D normal) {
+    private double calculateW(Point2D p, Triangle triangle) {
+        return p.dist(triangle.v1) / p.dist(triangle.v2);
+    }
+
+    private double calculateU(Point2D p, Triangle triangle) {
+        return p.dist(triangle.v2) / p.dist(triangle.v3);
+    }
+
+    private Vector3D calculateNa(Triangle triangle, double u) {
+        return triangle.n1().mul(1 - u).add(triangle.n2().mul(u));
+    }
+
+    private Vector3D calculateNb(Triangle triangle, double w) {
+        return triangle.n1().mul(1 - w).add(triangle.n3().mul(w));
+    }
+
+    private Vector3D calculateNt(Vector3D na, Vector3D nb, double t) {
+        return na.mul(1 - t).add(nb.mul(t)).normalize();
+    }
+
+    private Color calculateColor(Vector3D normal) {
+        double cos = calculateCos(normal);
+        int intensive = (int) (LIGHT_INTENSIVITY * KD * cos);
+        return new Color(intensive, intensive, intensive);
+    }
+
+    private double calculateCos(Vector3D normal) {
         return Math.abs(normal.x * viewVector.x + normal.y * viewVector.y + normal.z * viewVector.z) / (Math.sqrt(
                 normal.x * normal.x + normal.y * normal.y + normal.z * normal.z) * Math.sqrt(
                 viewVector.x * viewVector.x + viewVector.y * viewVector.y + viewVector.z * viewVector.z));
